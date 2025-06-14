@@ -6,7 +6,7 @@ import base64
 from deep_translator import GoogleTranslator
 
 # Set Streamlit page config
-st.set_page_config(page_title="Pill-AI", page_icon="💊", layout="centered")
+st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
 # Centered logo with subtitle (tight spacing)
 def get_base64_image(path):
