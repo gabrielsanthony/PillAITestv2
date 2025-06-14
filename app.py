@@ -32,7 +32,7 @@ if not api_key:
 client = openai.OpenAI(api_key=api_key)
 
 # Assistant ID (replace with your actual assistant ID)
-ASSISTANT_ID = "asst_3xS1vLEMnQyFqNXLTblUdbWS"
+ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 
 # Store thread across Streamlit sessions
 if "thread_id" not in st.session_state:
