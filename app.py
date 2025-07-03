@@ -138,7 +138,7 @@ with st.expander("Privacy Policy – Click to expand"):
     No long-term tracking, no selling of data — ever.
 
     **📬 Questions?**  
-    Contact us at: pill.ai.nz@gmail.com
+    Contact us at: pillai.nz.contact@gmail.com
 
     *Pill-AI is not a substitute for professional medical advice. Always check with a doctor or pharmacist if you're unsure.*
     """)
