@@ -24,7 +24,7 @@ st.markdown("""
         border-radius: 6px !important;
         box-shadow: none !important;
         transition: border 0.3s ease-in-out;
-        margin-top: -4px !important; /* Moves text box up slightly */
+        margin-top: 0 !important; /* Moves text box up slightly */
     }
     .stTextInput input:focus {
         border: 2px solid orange !important;
