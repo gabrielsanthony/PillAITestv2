@@ -35,7 +35,7 @@ st.markdown("""
         font-size: 1.1em;
         padding: 0.5em 1.2em;
         border-radius: 8px;
-        margin-top: 14px !important;  /* 👈 Aligns the button lower */
+        margin-top: 14px !important;
         transition: background-color 0.3s ease;
     }
     .stButton button:hover {
@@ -60,7 +60,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 🖼 Load and show logo (larger size)
+# 🖼 Load and show logo
 def get_base64_image(path):
     with open(path, "rb") as img_file:
         b64 = base64.b64encode(img_file.read()).decode()
@@ -74,9 +74,12 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # 🌐 Language selection
-language = st.selectbox("🌐 Choose answer language / Tīpakohia te reo / Filifili le gagana:", ["English", "Te Reo Māori", "Samoan"])
+language = st.selectbox(
+    "🌐 Choose answer language / Tīpakohia te reo / Filifili le gagana / Elige el idioma / 选择语言：",
+    ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin"]
+)
 
-# UI Language dictionary
+# Labels in different languages
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
@@ -104,11 +107,29 @@ labels = {
         "empty": "Fa’amolemole tusia se fesili.",
         "error": "E le’i mafai ona tali mai le fesoasoani.",
         "disclaimer": "⚠️ E le suitulaga Pill-AI i fautuaga faafomai. Fesili i lau foma’i po’o le fale talavai."
+    },
+    "Spanish": {
+        "prompt": "Haz una pregunta sobre medicamentos:",
+        "placeholder": "Escribe tu pregunta aquí...",
+        "send": "Enviar",
+        "thinking": "Pensando...",
+        "empty": "Por favor, escribe una pregunta.",
+        "error": "El asistente no pudo completar la solicitud.",
+        "disclaimer": "⚠️ Pill-AI no sustituye el consejo médico profesional. Consulta siempre a un farmacéutico o médico."
+    },
+    "Mandarin": {
+        "prompt": "请提出一个有关药物的问题：",
+        "placeholder": "在此输入您的问题…",
+        "send": "发送",
+        "thinking": "思考中...",
+        "empty": "请输入一个问题。",
+        "error": "助手未能完成请求。",
+        "disclaimer": "⚠️ Pill-AI 不能替代专业医疗建议。如有疑问，请咨询医生或药剂师。"
     }
 }
 L = labels[language]
 
-# 🔑 API Key setup
+# API Key setup
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
     st.error("OpenAI API key is not configured.")
@@ -117,12 +138,12 @@ if not api_key:
 client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 
-# Session thread init
+# Thread setup
 if "thread_id" not in st.session_state:
     thread = client.beta.threads.create()
     st.session_state["thread_id"] = thread.id
 
-# 💬 Input section
+# 💬 Input area
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 
@@ -167,6 +188,12 @@ if send_clicked:
                     elif language == "Samoan":
                         translated = GoogleTranslator(source='auto', target='sm').translate(cleaned_answer)
                         st.success(translated)
+                    elif language == "Spanish":
+                        translated = GoogleTranslator(source='auto', target='es').translate(cleaned_answer)
+                        st.success(translated)
+                    elif language == "Mandarin":
+                        translated = GoogleTranslator(source='auto', target='zh-CN').translate(cleaned_answer)
+                        st.success(translated)
                     else:
                         st.success(cleaned_answer)
                 else:
@@ -176,14 +203,14 @@ if send_clicked:
 
 st.markdown("</div>", unsafe_allow_html=True)
 
-# ⚠️ Disclaimer
+# Disclaimer
 st.markdown(f"""
 <div style='text-align: center; color: grey; font-size: 0.9em; margin-top: 40px;'>
 {L["disclaimer"]}
 </div>
 """, unsafe_allow_html=True)
 
-# 🔐 Privacy Policy
+# Privacy Policy
 with st.expander("🔐 Privacy Policy – Click to expand"):
     st.markdown("""
     ### 🛡️ Pill-AI Privacy Policy (Prototype Version)
