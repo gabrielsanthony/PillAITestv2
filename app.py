@@ -162,7 +162,7 @@ st.write(f"### 💬 {L['prompt']}")
 
 col1, col2 = st.columns([4, 1])
 with col1:
-    user_question = st.text_input(L["placeholder"], key="question_input")
+    user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
 with col2:
     send_clicked = st.button(L["send"])
 
