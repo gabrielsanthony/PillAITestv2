@@ -8,27 +8,14 @@ from deep_translator import GoogleTranslator
 # Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
+# 🔧 Custom CSS with font support for all languages
 st.markdown("""
     <style>
-    :root {
-        color-scheme: light !important;
-        --background-color: #f4f6f9 !important;
-        --text-color: #000000 !important;
-    }
-    html, body {
-        background-color: #f4f6f9 !important;
-        color: #000000 !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-
-# 🔧 Custom CSS
-st.markdown("""
-    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&display=swap');
     body {
         background-color: #f4f6f9;
-        font-family: 'Segoe UI', sans-serif;
+        font-family: 'Noto Sans', sans-serif;
     }
     .stTextInput input {
         background-color: #eeeeee !important;
@@ -39,6 +26,7 @@ st.markdown("""
         border-radius: 6px !important;
         box-shadow: none !important;
         transition: border 0.3s ease-in-out;
+        font-family: 'Noto Sans', 'Noto Sans Devanagari', sans-serif !important;
     }
     .stTextInput input:focus {
         border: 2px solid orange !important;
@@ -52,6 +40,7 @@ st.markdown("""
         border-radius: 8px;
         margin-top: 14px !important;
         transition: background-color 0.3s ease;
+        font-family: 'Noto Sans', 'Noto Sans Devanagari', sans-serif !important;
     }
     .stButton button:hover {
         background-color: #2563eb;
@@ -75,7 +64,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 🖼 Load and show logo
+# Load and show logo
+
 def get_base64_image(path):
     with open(path, "rb") as img_file:
         b64 = base64.b64encode(img_file.read()).decode()
@@ -88,13 +78,10 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# 🌐 Language selection
-language = st.selectbox(
-    "🌐 Choose answer language / Tīpakohia te reo / Filifili le gagana / Elige el idioma / 选择语言：",
-    ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin"]
-)
+# Language selection
+language = st.selectbox("Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"])
 
-# Labels in different languages
+# UI translations
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
@@ -107,12 +94,12 @@ labels = {
     },
     "Te Reo Māori": {
         "prompt": "Pātai he pātai mō te rongoā:",
-        "placeholder": "Tuhia tō pātai ki konei...",
+        "placeholder": "Tuhia ōtāu pātai ki konei...",
         "send": "Tukua",
         "thinking": "E whakaaro ana...",
-        "empty": "Tēnā, whakaurua he pātai.",
+        "empty": "Tēnā koa whakaurua he pātai.",
         "error": "I rahua te kaiwhina ki te whakautu.",
-        "disclaimer": "⚠️ Ehara a Pill-AI i te tohutohu hauora mō te tangata. Me pātai tonu ki tō rata, ki te rongoā hoki."
+        "disclaimer": "⚠️ Ehara a Pill-AI i te tohutohu hauora. Me pātai tonu ki tō rata, ki te rongoā hoki."
     },
     "Samoan": {
         "prompt": "Fesili i se fesili e uiga i fualaau:",
@@ -133,18 +120,27 @@ labels = {
         "disclaimer": "⚠️ Pill-AI no sustituye el consejo médico profesional. Consulta siempre a un farmacéutico o médico."
     },
     "Mandarin": {
-        "prompt": "请提出一个有关药物的问题：",
-        "placeholder": "在此输入您的问题…",
+        "prompt": "请提出有关药物的问题：",
+        "placeholder": "请在此输入问题...",
         "send": "发送",
         "thinking": "思考中...",
         "empty": "请输入一个问题。",
-        "error": "助手未能完成请求。",
-        "disclaimer": "⚠️ Pill-AI 不能替代专业医疗建议。如有疑问，请咨询医生或药剂师。"
+        "error": "助手未能完成该请求。",
+        "disclaimer": "⚠️ Pill-AI 不能替代专业医疗意见，请约见医生或药剂师。"
+    },
+    "Hindi": {
+        "prompt": "कृपया दवाओं से संबंधित प्रश्न पूछें:",
+        "placeholder": "यहां अपना प्रश्न लिखें...",
+        "send": "भेजें",
+        "thinking": "चिंतन किया जा रहा है...",
+        "empty": "कृपया कोई प्रश्न दाखिएं।",
+        "error": "सहायक अनुरोध पूरा नहीं कर पाया।",
+        "disclaimer": "⚠️ Pill-AI वैचिकारिक चिकित्सा सलाह की जगह नहीं लेता। कृपया कृपया चिकिट्सक जा फार्मासिस्ट से सलाह लें।"
     }
 }
 L = labels[language]
 
-# API Key setup
+# OpenAI setup
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
     st.error("OpenAI API key is not configured.")
@@ -153,12 +149,11 @@ if not api_key:
 client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 
-# Thread setup
 if "thread_id" not in st.session_state:
     thread = client.beta.threads.create()
     st.session_state["thread_id"] = thread.id
 
-# 💬 Input area
+# Input
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 
@@ -197,17 +192,15 @@ if send_clicked:
                     raw_answer = latest.content[0].text.value
                     cleaned_answer = re.sub(r'【[^】]*】', '', raw_answer).strip()
 
-                    if language == "Te Reo Māori":
-                        translated = GoogleTranslator(source='auto', target='mi').translate(cleaned_answer)
-                        st.success(translated)
-                    elif language == "Samoan":
-                        translated = GoogleTranslator(source='auto', target='sm').translate(cleaned_answer)
-                        st.success(translated)
-                    elif language == "Spanish":
-                        translated = GoogleTranslator(source='auto', target='es').translate(cleaned_answer)
-                        st.success(translated)
-                    elif language == "Mandarin":
-                        translated = GoogleTranslator(source='auto', target='zh-CN').translate(cleaned_answer)
+                    target_map = {
+                        "Te Reo Māori": "mi",
+                        "Samoan": "sm",
+                        "Spanish": "es",
+                        "Mandarin": "zh-CN",
+                        "Hindi": "hi"
+                    }
+                    if language in target_map:
+                        translated = GoogleTranslator(source='auto', target=target_map[language]).translate(cleaned_answer)
                         st.success(translated)
                     else:
                         st.success(cleaned_answer)
@@ -224,36 +217,3 @@ st.markdown(f"""
 {L["disclaimer"]}
 </div>
 """, unsafe_allow_html=True)
-
-# Privacy Policy
-with st.expander("🔐 Privacy Policy – Click to expand"):
-    st.markdown("""
-    ### 🛡️ Pill-AI Privacy Policy (Prototype Version)
-
-    Welcome to Pill-AI — your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
-
-    **📌 What we collect**  
-    When you use Pill-AI, we store:  
-    – The questions you type into the chat box  
-    This helps us understand how people are using the tool and improve it during testing.
-
-    **🔁 Who else is involved**  
-    Pill-AI uses services from:  
-    – OpenAI (for generating answers)  
-    – Streamlit (to host the app)  
-    – Google (possibly for hosting, analytics, or error logging)  
-    These platforms may collect some technical data like your device type or browser, but not your name.
-
-    **👶 Users under 16**  
-    Pill-AI can be used by people under 16. We don’t ask for names, emails, or personal details — just medicine-related questions.  
-    If you're under 16, please ask a parent or guardian before using Pill-AI.
-
-    **🗑️ Data won’t be kept forever**  
-    This is just a prototype. All stored data (like your questions) will be deleted once the testing is over.  
-    No long-term tracking, no selling of data — ever.
-
-    **📬 Questions?**  
-    Contact us at: pillai.nz.contact@gmail.com
-
-    *Pill-AI is not a substitute for professional medical advice. Always check with a doctor or pharmacist if you're unsure.*
-    """)
