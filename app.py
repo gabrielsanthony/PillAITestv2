@@ -8,6 +8,51 @@ from deep_translator import GoogleTranslator
 # Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
+st.markdown("""
+    <style>
+    /* Fix input box appearance */
+    .stTextInput input {
+        background-color: #eeeeee !important;
+        color: #000000 !important;
+        font-size: 1.2em !important;
+        padding: 10px !important;
+        border: 2px solid black !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
+        transition: border 0.3s ease-in-out;
+    }
+
+    /* Orange border on focus */
+    .stTextInput input:focus {
+        border: 2px solid orange !important;
+        outline: none !important;
+    }
+
+    /* Button styling remains the same */
+    .stButton button {
+        background-color: #3b82f6;
+        color: white;
+        font-size: 1.1em;
+        padding: 0.5em 1.2em;
+        border-radius: 8px;
+        margin-top: 6px;
+        transition: background-color 0.3s ease;
+    }
+
+    .stButton button:hover {
+        background-color: #2563eb;
+    }
+
+    /* Align input and button in one row properly */
+    div[data-testid="column"] {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # Custom CSS for layout & dark input box
 st.markdown("""
     <style>
