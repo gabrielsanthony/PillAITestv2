@@ -8,6 +8,21 @@ from deep_translator import GoogleTranslator
 # Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
+st.markdown("""
+    <style>
+    :root {
+        color-scheme: light !important;
+        --background-color: #f4f6f9 !important;
+        --text-color: #000000 !important;
+    }
+    html, body {
+        background-color: #f4f6f9 !important;
+        color: #000000 !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # 🔧 Custom CSS
 st.markdown("""
     <style>
