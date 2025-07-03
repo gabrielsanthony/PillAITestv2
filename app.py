@@ -24,7 +24,6 @@ st.markdown("""
         border-radius: 6px !important;
         box-shadow: none !important;
         transition: border 0.3s ease-in-out;
-        margin-top: 0 !important; /* Moves text box up slightly */
     }
     .stTextInput input:focus {
         border: 2px solid orange !important;
@@ -36,7 +35,7 @@ st.markdown("""
         font-size: 1.1em;
         padding: 0.5em 1.2em;
         border-radius: 8px;
-        margin-top: 6px;
+        margin-top: 14px !important;  /* 👈 Aligns the button lower */
         transition: background-color 0.3s ease;
     }
     .stButton button:hover {
@@ -44,7 +43,7 @@ st.markdown("""
     }
     div[data-testid="column"] {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 10px;
     }
     .block-container {
