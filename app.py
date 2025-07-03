@@ -8,23 +8,27 @@ from deep_translator import GoogleTranslator
 # Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
-# Custom CSS for styling
+# Custom CSS for layout & dark input box
 st.markdown("""
     <style>
     body {
         background-color: #f4f6f9;
         font-family: 'Segoe UI', sans-serif;
     }
-    .stTextInput > div > div > input {
+    .stTextInput input {
+        background-color: #eeeeee !important;
+        color: #000000 !important;
         font-size: 1.2em;
         padding: 10px;
+        border-radius: 6px;
     }
     .stButton button {
         background-color: #3b82f6;
         color: white;
         font-size: 1.1em;
-        padding: 0.6em 1.2em;
+        padding: 0.5em 1.2em;
         border-radius: 8px;
+        margin-top: 10px;
         transition: background-color 0.3s ease;
     }
     .stButton button:hover {
@@ -44,13 +48,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Function to load and encode logo
+# Load and encode logo
 def get_base64_image(path):
     with open(path, "rb") as img_file:
         b64 = base64.b64encode(img_file.read()).decode()
     return f"data:image/png;base64,{b64}"
 
-# Load logo
 logo_base64 = get_base64_image("pillai_logo.png")
 st.markdown(f"""
 <div style='text-align: center;'>
@@ -59,7 +62,42 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# API Setup
+# Language selection
+language = st.selectbox("🌐 Choose answer language / Tīpakohia te reo / Filifili le gagana:", ["English", "Te Reo Māori", "Samoan"])
+
+# Multilingual UI
+labels = {
+    "English": {
+        "prompt": "Ask a medicine-related question:",
+        "placeholder": "Type your question here...",
+        "send": "Send",
+        "thinking": "Thinking...",
+        "empty": "Please enter a question.",
+        "error": "The assistant failed to complete the request.",
+        "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP."
+    },
+    "Te Reo Māori": {
+        "prompt": "Pātai he pātai mō te rongoā:",
+        "placeholder": "Tuhia tō pātai ki konei...",
+        "send": "Tukua",
+        "thinking": "E whakaaro ana...",
+        "empty": "Tēnā, whakaurua he pātai.",
+        "error": "I rahua te kaiwhina ki te whakautu.",
+        "disclaimer": "⚠️ Ehara a Pill-AI i te tohutohu hauora mō te tangata. Me pātai tonu ki tō rata, ki te rongoā hoki."
+    },
+    "Samoan": {
+        "prompt": "Fesili i se fesili e uiga i fualaau:",
+        "placeholder": "Tusi i lau fesili i lalo...",
+        "send": "Auina atu",
+        "thinking": "O lo’o mafaufau...",
+        "empty": "Fa’amolemole tusia se fesili.",
+        "error": "E le’i mafai ona tali mai le fesoasoani.",
+        "disclaimer": "⚠️ E le suitulaga Pill-AI i fautuaga faafomai. Fesili i lau foma’i po’o le fale talavai."
+    }
+}
+L = labels[language]
+
+# API key setup
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
     st.error("OpenAI API key is not configured.")
@@ -68,77 +106,75 @@ if not api_key:
 client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 
-# Session state thread
+# Session thread
 if "thread_id" not in st.session_state:
     thread = client.beta.threads.create()
     st.session_state["thread_id"] = thread.id
 
-# Input Section
-with st.container():
-    st.markdown("<div class='section'>", unsafe_allow_html=True)
+# Input section
+st.markdown("<div class='section'>", unsafe_allow_html=True)
+st.write(f"### 💬 {L['prompt']}")
 
-    st.write("### 💬 Ask a medicine-related question:")
-    user_question = st.text_input("Type your question below:", key="question_input")
+col1, col2 = st.columns([4, 1])
+with col1:
+    user_question = st.text_input(L["placeholder"], key="question_input")
+with col2:
+    send_clicked = st.button(L["send"])
 
-    language = st.selectbox("🌐 Choose answer language:", ["English", "Te Reo Māori", "Samoan"])
+if send_clicked:
+    if not user_question.strip():
+        st.warning(L["empty"])
+    else:
+        with st.spinner(L["thinking"]):
+            try:
+                # Add user message
+                client.beta.threads.messages.create(
+                    thread_id=st.session_state["thread_id"],
+                    role="user",
+                    content=user_question
+                )
+                # Run assistant
+                run = client.beta.threads.runs.create(
+                    thread_id=st.session_state["thread_id"],
+                    assistant_id=ASSISTANT_ID
+                )
 
-    if st.button("Send"):
-        if not user_question.strip():
-            st.warning("Please enter a question.")
-        else:
-            with st.spinner("Thinking..."):
-                try:
-                    # Add user message
-                    client.beta.threads.messages.create(
+                while True:
+                    run_status = client.beta.threads.runs.retrieve(
                         thread_id=st.session_state["thread_id"],
-                        role="user",
-                        content=user_question
+                        run_id=run.id
                     )
+                    if run_status.status in ["completed", "failed"]:
+                        break
 
-                    # Run assistant
-                    run = client.beta.threads.runs.create(
-                        thread_id=st.session_state["thread_id"],
-                        assistant_id=ASSISTANT_ID
-                    )
+                if run_status.status == "completed":
+                    messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"])
+                    latest = messages.data[0]
+                    raw_answer = latest.content[0].text.value
+                    cleaned_answer = re.sub(r'【[^】]*】', '', raw_answer).strip()
 
-                    # Wait for completion
-                    while True:
-                        run_status = client.beta.threads.runs.retrieve(
-                            thread_id=st.session_state["thread_id"],
-                            run_id=run.id
-                        )
-                        if run_status.status in ["completed", "failed"]:
-                            break
-
-                    if run_status.status == "completed":
-                        messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"])
-                        latest = messages.data[0]
-                        raw_answer = latest.content[0].text.value
-                        cleaned_answer = re.sub(r'【[^】]*】', '', raw_answer).strip()
-
-                        if language == "Te Reo Māori":
-                            translated = GoogleTranslator(source='auto', target='mi').translate(cleaned_answer)
-                            st.success(translated)
-                        elif language == "Samoan":
-                            translated = GoogleTranslator(source='auto', target='sm').translate(cleaned_answer)
-                            st.success(translated)
-                        else:
-                            st.success(cleaned_answer)
+                    if language == "Te Reo Māori":
+                        translated = GoogleTranslator(source='auto', target='mi').translate(cleaned_answer)
+                        st.success(translated)
+                    elif language == "Samoan":
+                        translated = GoogleTranslator(source='auto', target='sm').translate(cleaned_answer)
+                        st.success(translated)
                     else:
-                        st.error("The assistant failed to complete the request.")
-                except Exception as e:
-                    st.error(f"Error: {str(e)}")
+                        st.success(cleaned_answer)
+                else:
+                    st.error(L["error"])
+            except Exception as e:
+                st.error(f"Error: {str(e)}")
+st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# Disclaimer Section
-st.markdown("""
+# Disclaimer
+st.markdown(f"""
 <div style='text-align: center; color: grey; font-size: 0.9em; margin-top: 40px;'>
-⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP.
+{L["disclaimer"]}
 </div>
 """, unsafe_allow_html=True)
 
-# Privacy Policy Section
+# Privacy policy
 with st.expander("🔐 Privacy Policy – Click to expand"):
     st.markdown("""
     ### 🛡️ Pill-AI Privacy Policy (Prototype Version)
