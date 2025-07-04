@@ -8,64 +8,67 @@ from deep_translator import GoogleTranslator
 # Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
-# 🔧 Fonts & Custom CSS
+# 🎨 Custom Fonts and CSS for language support and mobile responsiveness
 st.markdown("""
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
-    <style>
-    body {
-        background-color: #f4f6f9;
-        font-family: 'Segoe UI', sans-serif;
-    }
-    html[lang='zh'] body {
-        font-family: 'Noto Sans SC', sans-serif !important;
-    }
-    html[lang='hi'] body {
-        font-family: 'Noto Sans Devanagari', sans-serif !important;
-    }
-    .stTextInput input {
-        background-color: #eeeeee !important;
-        color: #000000 !important;
-        font-size: 1.2em !important;
-        padding: 10px !important;
-        border: 2px solid black !important;
-        border-radius: 6px !important;
-        box-shadow: none !important;
-        transition: border 0.3s ease-in-out;
-    }
-    .stTextInput input:focus {
-        border: 2px solid orange !important;
-        outline: none !important;
-    }
-    .stButton button {
-        background-color: #3b82f6;
-        color: white;
-        font-size: 1.1em;
-        padding: 0.5em 1.2em;
-        border-radius: 8px;
-        margin-top: 14px !important;
-        transition: background-color 0.3s ease;
-    }
-    .stButton button:hover {
-        background-color: #2563eb;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
+<style>
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', sans-serif;
+}
+@media screen and (max-width: 768px) {
     div[data-testid="column"] {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
+        flex-direction: column !important;
+        align-items: stretch !important;
     }
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
-    .section {
-        background-color: #ffffff;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        margin-bottom: 2rem;
-    }
-    </style>
+}
+.stTextInput input {
+    background-color: #eeeeee !important;
+    color: #000000 !important;
+    font-size: 1.2em !important;
+    padding: 10px !important;
+    border: 2px solid black !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+    transition: border 0.3s ease-in-out;
+}
+.stTextInput input:focus {
+    border: 2px solid orange !important;
+    outline: none !important;
+}
+.stButton button {
+    background-color: #3b82f6;
+    color: white;
+    font-size: 1.1em;
+    padding: 0.5em 1.2em;
+    border-radius: 8px;
+    margin-top: 14px !important;
+    transition: background-color 0.3s ease;
+}
+.stButton button:hover {
+    background-color: #2563eb;
+}
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+.section {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+</style>
 """, unsafe_allow_html=True)
+
+# 🌐 Fonts per language
+language_font = {
+    "Mandarin": "'Noto Sans SC'",
+    "Hindi": "'Noto Sans Devanagari'",
+}
+selected_font = language_font.get(st.session_state.get("language", ""), "'Segoe UI'")
+st.markdown(f"""<style>body {{ font-family: {selected_font}, sans-serif !important; }}</style>""", unsafe_allow_html=True)
 
 # 🖼 Logo
 def get_base64_image(path):
@@ -80,13 +83,11 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# 🌐 Language selector
-language = st.selectbox(
-    "🌐 Choose answer language / Tīpakohia te reo / Filifili le gagana / Elige el idioma / 选择语言 / भाषा चुनें:",
-    ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"]
-)
+# 🌍 Language Selector
+language = st.selectbox("🌐 Choose language:", ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"])
+st.session_state["language"] = language
 
-# UI Labels
+# 🔤 Localized UI labels
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
@@ -158,9 +159,12 @@ if "thread_id" not in st.session_state:
     thread = client.beta.threads.create()
     st.session_state["thread_id"] = thread.id
 
-# 💬 UI Input Section
+if "history" not in st.session_state:
+    st.session_state["history"] = []
+
+# 💬 User input area
 st.markdown("<div class='section'>", unsafe_allow_html=True)
-st.write(f"### 💬 {L['prompt']}")
+st.markdown(f"<h3 style='text-align:center;'>{L['prompt']}</h3>", unsafe_allow_html=True)
 
 col1, col2 = st.columns([4, 1])
 with col1:
@@ -168,11 +172,12 @@ with col1:
 with col2:
     send_clicked = st.button(L["send"])
 
+# 💭 Handle Query
 if send_clicked:
     if not user_question.strip():
         st.warning(L["empty"])
     else:
-        with st.spinner(L["thinking"]):
+        with st.spinner("💊 " + L["thinking"]):
             try:
                 client.beta.threads.messages.create(
                     thread_id=st.session_state["thread_id"],
@@ -195,25 +200,39 @@ if send_clicked:
                     messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"])
                     latest = messages.data[0]
                     raw_answer = latest.content[0].text.value
-                    cleaned_answer = re.sub(r'【[^】]*】', '', raw_answer).strip()
+                    cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
 
                     lang_codes = {
-                        "Te Reo Māori": "mi",
-                        "Samoan": "sm",
-                        "Spanish": "es",
-                        "Mandarin": "zh-CN",
-                        "Hindi": "hi"
+                        "Te Reo Māori": "mi", "Samoan": "sm",
+                        "Spanish": "es", "Mandarin": "zh-CN", "Hindi": "hi"
                     }
                     if language in lang_codes:
-                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned_answer)
+                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
                         st.success(translated)
+                        st.session_state["history"].append((user_question, translated))
                     else:
-                        st.success(cleaned_answer)
+                        st.success(cleaned)
+                        st.session_state["history"].append((user_question, cleaned))
                 else:
                     st.error(L["error"])
             except Exception as e:
                 st.error(f"Error: {str(e)}")
 st.markdown("</div>", unsafe_allow_html=True)
+
+# 🧾 Past Q&A
+if st.session_state["history"]:
+    st.markdown("### 📝 Previous questions:")
+    for q, a in reversed(st.session_state["history"][-5:]):
+        st.markdown(f"**🔹 You:** {q}")
+        st.markdown(f"**🔸 Pill-AI:** {a}")
+
+# 👍 Feedback
+st.markdown("Was this answer helpful?")
+col_yes, col_no = st.columns(2)
+with col_yes:
+    st.button("👍 Yes")
+with col_no:
+    st.button("👎 No")
 
 # ⚠️ Disclaimer
 st.markdown(f"""
