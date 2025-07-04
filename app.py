@@ -8,64 +8,90 @@ from deep_translator import GoogleTranslator
 # Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
-# 🔧 Fonts & Custom CSS
+# Show welcome popup once per session
+if "show_welcome" not in st.session_state:
+    st.session_state["show_welcome"] = True
+
+if st.session_state["show_welcome"]:
+    with st.container():
+        st.markdown("""
+            <div style='
+                background-color: #e0f2ff;
+                border: 1px solid #90cdf4;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                margin-bottom: 1rem;
+                font-family: "Segoe UI", sans-serif;
+            '>
+                <strong>👋 Hello, welcome to Pill-AI!</strong><br>
+                This is a prototype assistant to help you understand medicines using Medsafe info from NZ.
+            </div>
+        """, unsafe_allow_html=True)
+        if st.button("OK, got it!", key="dismiss_welcome"):
+            st.session_state["show_welcome"] = False
+
+
+# 🎨 Custom Fonts and CSS for language support and mobile responsiveness
 st.markdown("""
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
-    <style>
-    body {
-        background-color: #f4f6f9;
-        font-family: 'Segoe UI', sans-serif;
-    }
-    html[lang='zh'] body {
-        font-family: 'Noto Sans SC', sans-serif !important;
-    }
-    html[lang='hi'] body {
-        font-family: 'Noto Sans Devanagari', sans-serif !important;
-    }
-    .stTextInput input {
-        background-color: #eeeeee !important;
-        color: #000000 !important;
-        font-size: 1.2em !important;
-        padding: 10px !important;
-        border: 2px solid black !important;
-        border-radius: 6px !important;
-        box-shadow: none !important;
-        transition: border 0.3s ease-in-out;
-    }
-    .stTextInput input:focus {
-        border: 2px solid orange !important;
-        outline: none !important;
-    }
-    .stButton button {
-        background-color: #3b82f6;
-        color: white;
-        font-size: 1.1em;
-        padding: 0.5em 1.2em;
-        border-radius: 8px;
-        margin-top: 14px !important;
-        transition: background-color 0.3s ease;
-    }
-    .stButton button:hover {
-        background-color: #2563eb;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
+<style>
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', sans-serif;
+}
+@media screen and (max-width: 768px) {
     div[data-testid="column"] {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
+        flex-direction: column !important;
+        align-items: stretch !important;
     }
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
-    .section {
-        background-color: #ffffff;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        margin-bottom: 2rem;
-    }
-    </style>
+}
+.stTextInput input {
+    background-color: #eeeeee !important;
+    color: #000000 !important;
+    font-size: 1.2em !important;
+    padding: 10px !important;
+    border: 2px solid black !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+    transition: border 0.3s ease-in-out;
+}
+.stTextInput input:focus {
+    border: 2px solid orange !important;
+    outline: none !important;
+}
+.stButton button {
+    background-color: #3b82f6;
+    color: white;
+    font-size: 1.1em;
+    padding: 0.5em 1.2em;
+    border-radius: 8px;
+    margin-top: 14px !important;
+    transition: background-color 0.3s ease;
+}
+.stButton button:hover {
+    background-color: #2563eb;
+}
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+.section {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+</style>
 """, unsafe_allow_html=True)
+
+# 🌐 Fonts per language
+language_font = {
+    "Mandarin": "'Noto Sans SC'",
+    "Hindi": "'Noto Sans Devanagari'",
+}
+selected_font = language_font.get(st.session_state.get("language", ""), "'Segoe UI'")
+st.markdown(f"""<style>body {{ font-family: {selected_font}, sans-serif !important; }}</style>""", unsafe_allow_html=True)
 
 # 🖼 Logo
 def get_base64_image(path):
@@ -80,13 +106,11 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# 🌐 Language selector
-language = st.selectbox(
-    "🌐 Choose answer language / Tīpakohia te reo / Filifili le gagana / Elige el idioma / 选择语言 / भाषा चुनें:",
-    ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"]
-)
+# 🌍 Language Selector
+language = st.selectbox("🌐 Choose language:", ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"])
+st.session_state["language"] = language
 
-# UI Labels
+# 🔤 Localized UI labels
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
@@ -158,9 +182,12 @@ if "thread_id" not in st.session_state:
     thread = client.beta.threads.create()
     st.session_state["thread_id"] = thread.id
 
-# 💬 UI Input Section
+if "history" not in st.session_state:
+    st.session_state["history"] = []
+
+# 💬 User input area
 st.markdown("<div class='section'>", unsafe_allow_html=True)
-st.write(f"### 💬 {L['prompt']}")
+st.markdown(f"<h3 style='text-align:center;'>{L['prompt']}</h3>", unsafe_allow_html=True)
 
 col1, col2 = st.columns([4, 1])
 with col1:
@@ -168,11 +195,12 @@ with col1:
 with col2:
     send_clicked = st.button(L["send"])
 
+# 💭 Handle Query
 if send_clicked:
     if not user_question.strip():
         st.warning(L["empty"])
     else:
-        with st.spinner(L["thinking"]):
+        with st.spinner("💊 " + L["thinking"]):
             try:
                 client.beta.threads.messages.create(
                     thread_id=st.session_state["thread_id"],
@@ -195,25 +223,32 @@ if send_clicked:
                     messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"])
                     latest = messages.data[0]
                     raw_answer = latest.content[0].text.value
-                    cleaned_answer = re.sub(r'【[^】]*】', '', raw_answer).strip()
+                    cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
 
                     lang_codes = {
-                        "Te Reo Māori": "mi",
-                        "Samoan": "sm",
-                        "Spanish": "es",
-                        "Mandarin": "zh-CN",
-                        "Hindi": "hi"
+                        "Te Reo Māori": "mi", "Samoan": "sm",
+                        "Spanish": "es", "Mandarin": "zh-CN", "Hindi": "hi"
                     }
                     if language in lang_codes:
-                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned_answer)
+                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
                         st.success(translated)
+                        st.session_state["history"].append((user_question, translated))
                     else:
-                        st.success(cleaned_answer)
+                        st.success(cleaned)
+                        st.session_state["history"].append((user_question, cleaned))
                 else:
                     st.error(L["error"])
             except Exception as e:
                 st.error(f"Error: {str(e)}")
 st.markdown("</div>", unsafe_allow_html=True)
+
+# 🧾 Past Q&A
+if st.session_state["history"]:
+    st.markdown("### 📝 Previous questions:")
+    for q, a in reversed(st.session_state["history"][-5:]):
+        st.markdown(f"**🔹 You:** {q}")
+        st.markdown(f"**🔸 Pill-AI:** {a}")
+
 
 # ⚠️ Disclaimer
 st.markdown(f"""
@@ -227,21 +262,30 @@ with st.expander("🔐 Privacy Policy – Click to expand"):
     st.markdown("""
     ### 🛡️ Pill-AI Privacy Policy (Prototype Version)
 
-    This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
+    Welcome to Pill-AI — your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
 
-    **What we collect**  
-    – The questions you type into the chat box
+    **📌 What we collect**  
+    When you use Pill-AI, we store:  
+    – The questions you type into the chat box  
+    This helps us understand how people are using the tool and improve it during testing.
 
-    **Who else is involved**  
-    – OpenAI (for answers)  
-    – Streamlit (hosting)  
-    – Google (possibly for analytics)
+    **🔁 Who else is involved**  
+    Pill-AI uses services from:  
+    – OpenAI (for generating answers)  
+    – Streamlit (to host the app)  
+    – Google (possibly for hosting, analytics, or error logging)  
+    These platforms may collect some technical data like your device type or browser, but not your name.
 
-    **Under 16?**  
-    – Ask your guardian before using. No personal info is collected.
+    **👶 Users under 16**  
+    Pill-AI can be used by people under 16. We don’t ask for names, emails, or personal details — just medicine-related questions.  
+    If you're under 16, please ask a parent or guardian before using Pill-AI.
 
-    **Data retention**  
-    – No long-term storage. All testing data will be deleted.
+    **🗑️ Data won’t be kept forever**  
+    This is just a prototype. All stored data (like your questions) will be deleted once the testing is over.  
+    No long-term tracking, no selling of data — ever.
 
-    *Pill-AI is not a substitute for professional medical advice.*
+    **📬 Questions?**  
+    Contact us at: pillai.nz.contact@gmail.com
+
+    *Pill-AI is not a substitute for professional medical advice. Always check with a doctor or pharmacist if you're unsure.*
     """)
