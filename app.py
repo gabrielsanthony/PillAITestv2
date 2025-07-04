@@ -82,7 +82,7 @@ st.markdown(f"""
 
 # 🌐 Language selector
 language = st.selectbox(
-    "🌐 Choose answer language / Tīpakohia te reo / Filifili le gagana / Elige el idioma / 选择语言 / भाषा चुनें:",
+    "🌐 Choose answer language:",
     ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"]
 )
 
@@ -247,7 +247,7 @@ with st.expander("🔐 Privacy Policy – Click to expand"):
 
     **🗑️ Data won’t be kept forever**  
     This is just a prototype. All stored data (like your questions) will be deleted once the testing is over.  
-    No long-term tracking, no selling of data — ever.
+    No long-term tracking, no selling of data.
 
     **📬 Questions?**  
     Contact us at: pillai.nz.contact@gmail.com
