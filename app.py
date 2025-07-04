@@ -227,7 +227,7 @@ with st.expander("🔐 Privacy Policy – Click to expand"):
     st.markdown("""
     ### 🛡️ Pill-AI Privacy Policy (Prototype Version)
 
-    Welcome to Pill-AI — your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
+    Welcome to Pill-AI - your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
 
     **📌 What we collect**  
     When you use Pill-AI, we store:  
@@ -242,7 +242,7 @@ with st.expander("🔐 Privacy Policy – Click to expand"):
     These platforms may collect some technical data like your device type or browser, but not your name.
 
     **👶 Users under 16**  
-    Pill-AI can be used by people under 16. We don’t ask for names, emails, or personal details — just medicine-related questions.  
+    Pill-AI can be used by people under 16. We don’t ask for names, emails, or personal details - just medicine-related questions.  
     If you're under 16, please ask a parent or guardian before using Pill-AI.
 
     **🗑️ Data won’t be kept forever**  
