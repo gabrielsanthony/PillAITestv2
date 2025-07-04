@@ -4,7 +4,6 @@ import os
 import re
 import base64
 from deep_translator import GoogleTranslator
-from streamlit_mic_recorder import mic_recorder
 
 # Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
@@ -105,8 +104,7 @@ st.write(f"### 💬 {L['prompt']}")
 
 col1, col2 = st.columns([4, 1])
 with col1:
-    audio = mic_recorder(start_prompt="🎤 Speak your question", stop_prompt="⏹ Stop", just_once=True, key="rec")
-    user_question = st.text_input(label="", placeholder=L["placeholder"], value=audio if audio else "", key="question_input")
+    user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
 with col2:
     send_clicked = st.button(L["send"])
 
