@@ -227,21 +227,30 @@ with st.expander("🔐 Privacy Policy – Click to expand"):
     st.markdown("""
     ### 🛡️ Pill-AI Privacy Policy (Prototype Version)
 
-    This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
+    Welcome to Pill-AI — your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
 
-    **What we collect**  
-    – The questions you type into the chat box
+    **📌 What we collect**  
+    When you use Pill-AI, we store:  
+    – The questions you type into the chat box  
+    This helps us understand how people are using the tool and improve it during testing.
 
-    **Who else is involved**  
-    – OpenAI (for answers)  
-    – Streamlit (hosting)  
-    – Google (possibly for analytics)
+    **🔁 Who else is involved**  
+    Pill-AI uses services from:  
+    – OpenAI (for generating answers)  
+    – Streamlit (to host the app)  
+    – Google (possibly for hosting, analytics, or error logging)  
+    These platforms may collect some technical data like your device type or browser, but not your name.
 
-    **Under 16?**  
-    – Ask your guardian before using. No personal info is collected.
+    **👶 Users under 16**  
+    Pill-AI can be used by people under 16. We don’t ask for names, emails, or personal details — just medicine-related questions.  
+    If you're under 16, please ask a parent or guardian before using Pill-AI.
 
-    **Data retention**  
-    – No long-term storage. All testing data will be deleted.
+    **🗑️ Data won’t be kept forever**  
+    This is just a prototype. All stored data (like your questions) will be deleted once the testing is over.  
+    No long-term tracking, no selling of data — ever.
 
-    *Pill-AI is not a substitute for professional medical advice.*
+    **📬 Questions?**  
+    Contact us at: pillai.nz.contact@gmail.com
+
+    *Pill-AI is not a substitute for professional medical advice. Always check with a doctor or pharmacist if you're unsure.*
     """)
