@@ -226,13 +226,6 @@ if st.session_state["history"]:
         st.markdown(f"**🔹 You:** {q}")
         st.markdown(f"**🔸 Pill-AI:** {a}")
 
-# 👍 Feedback
-st.markdown("Was this answer helpful?")
-col_yes, col_no = st.columns(2)
-with col_yes:
-    st.button("👍 Yes")
-with col_no:
-    st.button("👎 No")
 
 # ⚠️ Disclaimer
 st.markdown(f"""
