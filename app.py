@@ -8,12 +8,19 @@ from deep_translator import GoogleTranslator
 # Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
-# 🔧 Custom CSS
+# 🔧 Fonts & Custom CSS
 st.markdown("""
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
     <style>
     body {
         background-color: #f4f6f9;
         font-family: 'Segoe UI', sans-serif;
+    }
+    html[lang='zh'] body {
+        font-family: 'Noto Sans SC', sans-serif !important;
+    }
+    html[lang='hi'] body {
+        font-family: 'Noto Sans Devanagari', sans-serif !important;
     }
     .stTextInput input {
         background-color: #eeeeee !important;
@@ -60,7 +67,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 🖼 Load and show logo
+# 🖼 Logo
 def get_base64_image(path):
     with open(path, "rb") as img_file:
         b64 = base64.b64encode(img_file.read()).decode()
@@ -73,13 +80,13 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# 🌐 Language selection
+# 🌐 Language selector
 language = st.selectbox(
-    "🌐 Choose answer language / Tīpakohia te reo / Filifili le gagana / Elige el idioma / 选择语言：",
-    ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin"]
+    "🌐 Choose answer language / Tīpakohia te reo / Filifili le gagana / Elige el idioma / 选择语言 / भाषा चुनें:",
+    ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"]
 )
 
-# Labels in different languages
+# UI Labels
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
@@ -125,11 +132,20 @@ labels = {
         "empty": "请输入一个问题。",
         "error": "助手未能完成请求。",
         "disclaimer": "⚠️ Pill-AI 不能替代专业医疗建议。如有疑问，请咨询医生或药剂师。"
+    },
+    "Hindi": {
+        "prompt": "दवा से संबंधित एक प्रश्न पूछें:",
+        "placeholder": "अपना प्रश्न यहां लिखें...",
+        "send": "भेजें",
+        "thinking": "सोचा जा रहा है...",
+        "empty": "कृपया एक प्रश्न दर्ज करें।",
+        "error": "सहायक अनुरोध पूरा नहीं कर सका।",
+        "disclaimer": "⚠️ Pill-AI पेशेवर चिकित्सा सलाह का विकल्प नहीं है। हमेशा डॉक्टर या फार्मासिस्ट से परामर्श लें।"
     }
 }
 L = labels[language]
 
-# API Key setup
+# 🔐 API Setup
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
     st.error("OpenAI API key is not configured.")
@@ -138,12 +154,11 @@ if not api_key:
 client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 
-# Thread setup
 if "thread_id" not in st.session_state:
     thread = client.beta.threads.create()
     st.session_state["thread_id"] = thread.id
 
-# 💬 Input area
+# 💬 UI Input Section
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 
@@ -182,17 +197,15 @@ if send_clicked:
                     raw_answer = latest.content[0].text.value
                     cleaned_answer = re.sub(r'【[^】]*】', '', raw_answer).strip()
 
-                    if language == "Te Reo Māori":
-                        translated = GoogleTranslator(source='auto', target='mi').translate(cleaned_answer)
-                        st.success(translated)
-                    elif language == "Samoan":
-                        translated = GoogleTranslator(source='auto', target='sm').translate(cleaned_answer)
-                        st.success(translated)
-                    elif language == "Spanish":
-                        translated = GoogleTranslator(source='auto', target='es').translate(cleaned_answer)
-                        st.success(translated)
-                    elif language == "Mandarin":
-                        translated = GoogleTranslator(source='auto', target='zh-CN').translate(cleaned_answer)
+                    lang_codes = {
+                        "Te Reo Māori": "mi",
+                        "Samoan": "sm",
+                        "Spanish": "es",
+                        "Mandarin": "zh-CN",
+                        "Hindi": "hi"
+                    }
+                    if language in lang_codes:
+                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned_answer)
                         st.success(translated)
                     else:
                         st.success(cleaned_answer)
@@ -200,45 +213,35 @@ if send_clicked:
                     st.error(L["error"])
             except Exception as e:
                 st.error(f"Error: {str(e)}")
-
 st.markdown("</div>", unsafe_allow_html=True)
 
-# Disclaimer
+# ⚠️ Disclaimer
 st.markdown(f"""
 <div style='text-align: center; color: grey; font-size: 0.9em; margin-top: 40px;'>
 {L["disclaimer"]}
 </div>
 """, unsafe_allow_html=True)
 
-# Privacy Policy
+# 🔐 Privacy Policy
 with st.expander("🔐 Privacy Policy – Click to expand"):
     st.markdown("""
     ### 🛡️ Pill-AI Privacy Policy (Prototype Version)
 
-    Welcome to Pill-AI — your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
+    This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
 
-    **📌 What we collect**  
-    When you use Pill-AI, we store:  
-    – The questions you type into the chat box  
-    This helps us understand how people are using the tool and improve it during testing.
+    **What we collect**  
+    – The questions you type into the chat box
 
-    **🔁 Who else is involved**  
-    Pill-AI uses services from:  
-    – OpenAI (for generating answers)  
-    – Streamlit (to host the app)  
-    – Google (possibly for hosting, analytics, or error logging)  
-    These platforms may collect some technical data like your device type or browser, but not your name.
+    **Who else is involved**  
+    – OpenAI (for answers)  
+    – Streamlit (hosting)  
+    – Google (possibly for analytics)
 
-    **👶 Users under 16**  
-    Pill-AI can be used by people under 16. We don’t ask for names, emails, or personal details — just medicine-related questions.  
-    If you're under 16, please ask a parent or guardian before using Pill-AI.
+    **Under 16?**  
+    – Ask your guardian before using. No personal info is collected.
 
-    **🗑️ Data won’t be kept forever**  
-    This is just a prototype. All stored data (like your questions) will be deleted once the testing is over.  
-    No long-term tracking, no selling of data — ever.
+    **Data retention**  
+    – No long-term storage. All testing data will be deleted.
 
-    **📬 Questions?**  
-    Contact us at: pillai.nz.contact@gmail.com
-
-    *Pill-AI is not a substitute for professional medical advice. Always check with a doctor or pharmacist if you're unsure.*
+    *Pill-AI is not a substitute for professional medical advice.*
     """)
