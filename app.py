@@ -16,57 +16,19 @@ if st.session_state["show_welcome"]:
     with st.container():
         st.markdown("""
             <div style='
-                position: fixed;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: #fff;
-                padding: 20px;
-                border: 2px solid #3b82f6;
+                background-color: #e0f2ff;
+                border: 1px solid #90cdf4;
+                padding: 1rem 1.5rem;
                 border-radius: 10px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                z-index: 9999;
-                width: 90%;
-                max-width: 500px;
+                margin-bottom: 1rem;
                 font-family: "Segoe UI", sans-serif;
             '>
-                <h4 style='margin-top: 0;'>👋 Hello, welcome to Pill-AI</h4>
-                <p>This is a prototype smart assistant to help you learn more about your medications. All answers come from trusted New Zealand Medsafe resources.</p>
-                <button onclick="window.dispatchEvent(new Event('closeWelcome'))" style='
-                    background-color: #3b82f6;
-                    color: white;
-                    border: none;
-                    padding: 10px 16px;
-                    border-radius: 6px;
-                    font-size: 1em;
-                    cursor: pointer;
-                    margin-top: 10px;
-                '>OK, got it</button>
+                <strong>👋 Hello, welcome to Pill-AI!</strong><br>
+                This is a prototype assistant to help you understand medicines using Medsafe info from NZ.
             </div>
-            <script>
-            window.addEventListener('closeWelcome', () => {
-                fetch("/_stcore/pillai_close", { method: "POST" });
-            });
-            </script>
         """, unsafe_allow_html=True)
-
-    # Intercept JavaScript event by handling it with a Streamlit endpoint
-    from streamlit.server.server import Server
-    import threading
-
-    def close_popup():
-        st.session_state["show_welcome"] = False
-
-    def handle_custom_event():
-        # Wait for POST to endpoint
-        from flask import request
-        app = Server.get_current()._get_flask_app()
-        @app.route("/_stcore/pillai_close", methods=["POST"])
-        def _close():
-            threading.Thread(target=close_popup).start()
-            return "", 204
-
-    handle_custom_event()
+        if st.button("OK, got it!", key="dismiss_welcome"):
+            st.session_state["show_welcome"] = False
 
 
 # 🎨 Custom Fonts and CSS for language support and mobile responsiveness
