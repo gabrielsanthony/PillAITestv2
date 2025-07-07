@@ -92,17 +92,28 @@ ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 if "thread_id" not in st.session_state:
     st.session_state["thread_id"] = client.beta.threads.create().id
 
-# Fuzzy Medsafe link matcher (multi-match)
-def find_medsafe_links(answer_text, top_n=3):
+# Enhanced Medsafe link matcher (multi-match + loose match)
+def find_medsafe_links(answer_text, top_n=5):
     answer = answer_text.lower()
     matches = []
 
     for key, url in medsafe_links.items():
         key_clean = key.lower().replace("source_", "").replace("_", " ").replace(",", "")
         tokens = key_clean.split()
-        match_count = sum(1 for token in tokens if token in answer and len(token) > 3)
+
+        match_count = 0
+        for token in tokens:
+            if token in answer and len(token) > 3:
+                match_count += 1
+            elif token in answer and len(token) <= 3:
+                match_count += 0.5
+
         score = match_count / len(tokens)
-        if score >= 0.4:
+
+        if answer in key_clean:
+            score += 0.3
+
+        if score >= 0.25:
             matches.append((score, key_clean, url))
 
     matches.sort(reverse=True)
