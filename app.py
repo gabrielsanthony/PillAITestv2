@@ -3,6 +3,7 @@ import openai
 import os
 import re
 import base64
+import json
 from deep_translator import GoogleTranslator
 
 # Page config
@@ -209,10 +210,39 @@ if send_clicked:
                         st.success(translated)
                     else:
                         st.success(cleaned_answer)
+
+                    # 🔽 Source Link Block
+                    if "medsafe_sources" not in st.session_state:
+                        try:
+                            with open("medsafe_source_links_cleaned.json", "r") as f:
+                                st.session_state["medsafe_sources"] = json.load(f)
+                        except Exception as e:
+                            st.warning(f"Could not load Medsafe links: {e}")
+                            st.session_state["medsafe_sources"] = {}
+
+                    sources = st.session_state["medsafe_sources"]
+                    citation_keys = re.findall(r'【[^†】]*†([^】]*)】', raw_answer)
+                    matched_links = {}
+                    for key in citation_keys:
+                        key = key.strip().lower()
+                        if key in sources:
+                            matched_links[key] = sources[key]
+                        else:
+                            for stored_key in sources:
+                                if key in stored_key:
+                                    matched_links[stored_key] = sources[stored_key]
+                                    break
+
+                    if matched_links:
+                        st.markdown("#### 📄 Sources:")
+                        for name, link in matched_links.items():
+                            readable_name = name.replace("source_", "").replace("_", " ").title()
+                            st.markdown(f"🔗 [{readable_name}]({link})")
                 else:
                     st.error(L["error"])
             except Exception as e:
                 st.error(f"Error: {str(e)}")
+
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ⚠️ Disclaimer
