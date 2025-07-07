@@ -4,9 +4,10 @@ import os
 import re
 import base64
 import json
+from difflib import SequenceMatcher
 from deep_translator import GoogleTranslator
 
-# Load Medsafe PDF links
+# 📥 Load Medsafe PDF links
 try:
     with open("medsafe_source_links_cleaned.json", "r") as f:
         medsafe_links = json.load(f)
@@ -14,10 +15,10 @@ except Exception as e:
     medsafe_links = {}
     st.warning(f"Could not load Medsafe links: {e}")
 
-# Page config
+# ⚙️ Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
-# 🔧 Fonts & Custom CSS
+# 🎨 Fonts & Custom CSS
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
     <style>
@@ -38,8 +39,6 @@ st.markdown("""
         padding: 10px !important;
         border: 2px solid black !important;
         border-radius: 6px !important;
-        box-shadow: none !important;
-        transition: border 0.3s ease-in-out;
     }
     .stTextInput input:focus {
         border: 2px solid orange !important;
@@ -52,19 +51,9 @@ st.markdown("""
         padding: 0.5em 1.2em;
         border-radius: 8px;
         margin-top: 14px !important;
-        transition: background-color 0.3s ease;
     }
     .stButton button:hover {
         background-color: #2563eb;
-    }
-    div[data-testid="column"] {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
     }
     .section {
         background-color: #ffffff;
@@ -79,21 +68,13 @@ st.markdown("""
 # 🖼 Logo
 def get_base64_image(path):
     with open(path, "rb") as img_file:
-        b64 = base64.b64encode(img_file.read()).decode()
-    return f"data:image/png;base64,{b64}"
+        return f"data:image/png;base64,{base64.b64encode(img_file.read()).decode()}"
 
 logo_base64 = get_base64_image("pillai_logo.png")
-st.markdown(f"""
-<div style='text-align: center;'>
-    <img src='{logo_base64}' width='240' style='margin-bottom: 10px;'>
-</div>
-""", unsafe_allow_html=True)
+st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
 # 🌐 Language selector
-language = st.selectbox(
-    "🌐 Choose answer language:",
-    ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"]
-)
+language = st.selectbox("🌐 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"])
 
 # UI Labels
 labels = {
@@ -106,7 +87,51 @@ labels = {
         "error": "The assistant failed to complete the request.",
         "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP."
     },
-    # (Other languages omitted for brevity)
+    "Te Reo Māori": {
+        "prompt": "Pātai he pātai mō te rongoā:",
+        "placeholder": "Tuhia tō pātai ki konei...",
+        "send": "Tukua",
+        "thinking": "E whakaaro ana...",
+        "empty": "Tēnā, whakaurua he pātai.",
+        "error": "I rahua te kaiwhina ki te whakautu.",
+        "disclaimer": "⚠️ Ehara a Pill-AI i te tohutohu hauora mō te tangata. Me pātai tonu ki tō rata, ki te rongoā hoki."
+    },
+    "Samoan": {
+        "prompt": "Fesili i se fesili e uiga i fualaau:",
+        "placeholder": "Tusi i lau fesili i lalo...",
+        "send": "Auina atu",
+        "thinking": "O lo’o mafaufau...",
+        "empty": "Fa’amolemole tusia se fesili.",
+        "error": "E le’i mafai ona tali mai le fesoasoani.",
+        "disclaimer": "⚠️ E le suitulaga Pill-AI i fautuaga faafomai. Fesili i lau foma’i po’o le fale talavai."
+    },
+    "Spanish": {
+        "prompt": "Haz una pregunta sobre medicamentos:",
+        "placeholder": "Escribe tu pregunta aquí...",
+        "send": "Enviar",
+        "thinking": "Pensando...",
+        "empty": "Por favor, escribe una pregunta.",
+        "error": "El asistente no pudo completar la solicitud.",
+        "disclaimer": "⚠️ Pill-AI no sustituye el consejo médico profesional. Consulta siempre a un farmacéutico o médico."
+    },
+    "Mandarin": {
+        "prompt": "请提出一个有关药物的问题：",
+        "placeholder": "在此输入您的问题…",
+        "send": "发送",
+        "thinking": "思考中...",
+        "empty": "请输入一个问题。",
+        "error": "助手未能完成请求。",
+        "disclaimer": "⚠️ Pill-AI 不能替代专业医疗建议。如有疑问，请咨询医生或药剂师。"
+    },
+    "Hindi": {
+        "prompt": "दवा से संबंधित एक प्रश्न पूछें:",
+        "placeholder": "अपना प्रश्न यहां लिखें...",
+        "send": "भेजें",
+        "thinking": "सोचा जा रहा है...",
+        "empty": "कृपया एक प्रश्न दर्ज करें।",
+        "error": "सहायक अनुरोध पूरा नहीं कर सका।",
+        "disclaimer": "⚠️ Pill-AI पेशेवर चिकित्सा सलाह का विकल्प नहीं है। हमेशा डॉक्टर या फार्मासिस्ट से परामर्श लें।"
+    }
 }
 L = labels[language]
 
@@ -120,18 +145,21 @@ client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 
 if "thread_id" not in st.session_state:
-    thread = client.beta.threads.create()
-    st.session_state["thread_id"] = thread.id
+    st.session_state["thread_id"] = client.beta.threads.create().id
 
-# Helper to find Medsafe link
+# 🔍 Find best Medsafe link
 def find_medsafe_link(answer_text):
+    best_match = None
+    best_score = 0
     for key, url in medsafe_links.items():
         key_clean = key.lower().replace("source_", "").replace("_", " ")
-        if key_clean in answer_text.lower():
-            return url
-    return None
+        score = SequenceMatcher(None, key_clean, answer_text.lower()).ratio()
+        if score > best_score and score > 0.6:
+            best_match = url
+            best_score = score
+    return best_match
 
-# 💬 UI Input Section
+# 💬 Input UI
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 
@@ -166,23 +194,20 @@ if send_clicked:
 
                 if run_status.status == "completed":
                     messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"])
-                    latest = messages.data[0]
-                    raw_answer = latest.content[0].text.value
+                    raw_answer = messages.data[0].content[0].text.value
                     cleaned_answer = re.sub(r'【[^】]*】', '', raw_answer).strip()
 
+                    # Translate if needed
                     lang_codes = {
-                        "Te Reo Māori": "mi",
-                        "Samoan": "sm",
-                        "Spanish": "es",
-                        "Mandarin": "zh-CN",
-                        "Hindi": "hi"
+                        "Te Reo Māori": "mi", "Samoan": "sm", "Spanish": "es",
+                        "Mandarin": "zh-CN", "Hindi": "hi"
                     }
                     if language in lang_codes:
-                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned_answer)
-                        st.success(translated)
-                    else:
-                        st.success(cleaned_answer)
+                        cleaned_answer = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned_answer)
 
+                    st.success(cleaned_answer)
+
+                    # 🔗 Find Medsafe link
                     pdf_url = find_medsafe_link(cleaned_answer)
                     if pdf_url:
                         st.markdown(f"📄 [View full Medsafe Consumer Info PDF]({pdf_url})", unsafe_allow_html=True)
@@ -193,41 +218,29 @@ if send_clicked:
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ⚠️ Disclaimer
-st.markdown(f"""
-<div style='text-align: center; color: grey; font-size: 0.9em; margin-top: 40px;'>
-{L["disclaimer"]}
-</div>
-""", unsafe_allow_html=True)
+st.markdown(f"<div style='text-align: center; color: grey; font-size: 0.9em; margin-top: 40px;'>{L['disclaimer']}</div>", unsafe_allow_html=True)
 
 # 🔐 Privacy Policy
 with st.expander("🔐 Privacy Policy – Click to expand"):
     st.markdown("""
     ### 🛡️ Pill-AI Privacy Policy (Prototype Version)
-
-    Welcome to Pill-AI - your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
+    Welcome to Pill-AI - your trusted medicines advisor. This is a prototype tool using trusted Medsafe resources.
 
     **📌 What we collect**  
-    When you use Pill-AI, we store:  
-    – The questions you type into the chat box  
-    This helps us understand how people are using the tool and improve it during testing.
+    – Only the questions you type.  
+    – No names, emails, or personal info.
 
     **🔁 Who else is involved**  
-    Pill-AI uses services from:  
-    – OpenAI (for generating answers)  
-    – Streamlit (to host the app)  
-    – Google (possibly for hosting, analytics, or error logging)  
-    These platforms may collect some technical data like your device type or browser, but not your name.
+    – OpenAI (for responses)  
+    – Streamlit & Google (to host)
 
     **👶 Users under 16**  
-    Pill-AI can be used by people under 16. We don’t ask for names, emails, or personal details - just medicine-related questions.  
-    If you're under 16, please ask a parent or guardian before using Pill-AI.
+    Please ask a parent or caregiver before using.
 
-    **🗑️ Data won’t be kept forever**  
-    This is just a prototype. All stored data (like your questions) will be deleted once the testing is over.  
-    No long-term tracking, no selling of data.
+    **🗑️ Data deletion**  
+    This prototype is temporary. Data will be deleted after testing.
 
-    **📬 Questions?**  
-    Contact us at: pillai.nz.contact@gmail.com
+    📬 Questions? Email us: pillai.nz.contact@gmail.com
 
-    *Pill-AI is not a substitute for professional medical advice. Always check with a doctor or pharmacist if you're unsure.*
+    *Pill-AI is not a substitute for professional advice.*
     """)
