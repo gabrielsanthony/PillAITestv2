@@ -92,29 +92,23 @@ ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 if "thread_id" not in st.session_state:
     st.session_state["thread_id"] = client.beta.threads.create().id
 
-# Enhanced Medsafe link matcher (multi-match + loose match)
+# Stricter Medsafe link matcher based on drug name appearance only
 def find_medsafe_links(answer_text, top_n=5):
     answer = answer_text.lower()
+    answer_keywords = set(re.findall(r"\b[a-zA-Z0-9]+\b", answer))
     matches = []
 
     for key, url in medsafe_links.items():
         key_clean = key.lower().replace("source_", "").replace("_", " ").replace(",", "")
-        tokens = key_clean.split()
+        key_tokens = set(re.findall(r"\b[a-zA-Z0-9]+\b", key_clean))
 
-        match_count = 0
-        for token in tokens:
-            if token in answer and len(token) > 3:
-                match_count += 1
-            elif token in answer and len(token) <= 3:
-                match_count += 0.5
+        # Only count matches with exact token overlap (excluding common terms)
+        core_matches = answer_keywords & key_tokens
+        if len(core_matches) == 0:
+            continue
 
-        score = match_count / len(tokens)
-
-        if answer in key_clean:
-            score += 0.3
-
-        if score >= 0.25:
-            matches.append((score, key_clean, url))
+        score = len(core_matches) / len(key_tokens)
+        matches.append((score, key_clean, url))
 
     matches.sort(reverse=True)
     return matches[:top_n]
