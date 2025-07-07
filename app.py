@@ -5,8 +5,9 @@ import re
 import base64
 import json
 from deep_translator import GoogleTranslator
+from difflib import get_close_matches
 
-# --- Load Medsafe PDF links ---
+# Load Medsafe PDF links
 try:
     with open("medsafe_source_links_cleaned.json", "r") as f:
         medsafe_links = json.load(f)
@@ -14,10 +15,10 @@ except Exception as e:
     medsafe_links = {}
     st.warning(f"Could not load Medsafe links: {e}")
 
-# --- Page config ---
+# Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
-# --- Custom CSS ---
+# Custom CSS
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
     <style>
@@ -31,12 +32,8 @@ st.markdown("""
         padding: 10px !important;
         border: 2px solid black !important;
         border-radius: 6px !important;
-        box-shadow: none !important;
     }
-    .stTextInput input:focus {
-        border: 2px solid orange !important;
-        outline: none !important;
-    }
+    .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
     .stButton button {
         background-color: #3b82f6;
         color: white;
@@ -44,30 +41,41 @@ st.markdown("""
         padding: 0.5em 1.2em;
         border-radius: 8px;
         margin-top: 14px !important;
-        transition: background-color 0.3s ease;
     }
-    .stButton button:hover {
-        background-color: #2563eb;
+    .stButton button:hover { background-color: #2563eb; }
+    div[data-testid="column"] {
+        display: flex; align-items: flex-start; gap: 10px;
     }
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+    .block-container { padding-top: 2rem; padding-bottom: 2rem; }
+    .section {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- Logo ---
+# Logo
 def get_base64_image(path):
     with open(path, "rb") as img_file:
-        return f"data:image/png;base64,{base64.b64encode(img_file.read()).decode()}"
+        b64 = base64.b64encode(img_file.read()).decode()
+    return f"data:image/png;base64,{b64}"
 
-if os.path.exists("pillai_logo.png"):
-    logo_base64 = get_base64_image("pillai_logo.png")
-    st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
+logo_base64 = get_base64_image("pillai_logo.png")
+st.markdown(f"""
+<div style='text-align: center;'>
+    <img src='{logo_base64}' width='240' style='margin-bottom: 10px;'>
+</div>
+""", unsafe_allow_html=True)
 
-# --- Language selector ---
-language = st.selectbox("🌐 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"])
+# Language select
+language = st.selectbox("🌐 Choose answer language:",
+    ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"]
+)
 
+# Labels
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
@@ -77,11 +85,12 @@ labels = {
         "empty": "Please enter a question.",
         "error": "The assistant failed to complete the request.",
         "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP."
-    },
+    }
+    # (Add other languages here if needed)
 }
 L = labels[language]
 
-# --- API Setup ---
+# OpenAI setup
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
     st.error("OpenAI API key is not configured.")
@@ -91,25 +100,38 @@ client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 
 if "thread_id" not in st.session_state:
-    st.session_state["thread_id"] = client.beta.threads.create().id
+    thread = client.beta.threads.create()
+    st.session_state["thread_id"] = thread.id
 
-# --- Find PDF link helper ---
+# Fuzzy Medsafe link matcher
 def find_medsafe_link(answer_text):
-    for key, url in medsafe_links.items():
-        key_clean = key.lower().replace("source_", "").replace("_", " ")
-        if key_clean in answer_text.lower():
-            return url
+    answer_text_lower = answer_text.lower()
+    possible_keys = [k.lower().replace("source_", "").replace("_", " ") for k in medsafe_links]
+    
+    # Try exact partial match first
+    for original_key, key_clean in zip(medsafe_links.keys(), possible_keys):
+        if key_clean in answer_text_lower:
+            return medsafe_links[original_key]
+
+    # Try fuzzy match
+    close = get_close_matches(answer_text_lower, possible_keys, n=1, cutoff=0.5)
+    if close:
+        match_index = possible_keys.index(close[0])
+        match_key = list(medsafe_links.keys())[match_index]
+        return medsafe_links[match_key]
+
     return None
 
-# --- UI input section ---
-st.markdown("### 💬 " + L["prompt"])
+# UI
+st.markdown("<div class='section'>", unsafe_allow_html=True)
+st.write(f"### 💬 {L['prompt']}")
+
 col1, col2 = st.columns([4, 1])
 with col1:
     user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
 with col2:
     send_clicked = st.button(L["send"])
 
-# --- Handle interaction ---
 if send_clicked:
     if not user_question.strip():
         st.warning(L["empty"])
@@ -137,8 +159,9 @@ if send_clicked:
                     messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"])
                     latest = messages.data[0]
                     raw_answer = latest.content[0].text.value
-                    cleaned_answer = re.sub(r'【[^】]*】', '', raw_answer).strip()
+                    cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
 
+                    # Translate if needed
                     lang_codes = {
                         "Te Reo Māori": "mi",
                         "Samoan": "sm",
@@ -147,45 +170,56 @@ if send_clicked:
                         "Hindi": "hi"
                     }
                     if language in lang_codes:
-                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned_answer)
+                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
                         st.success(translated)
                     else:
-                        st.success(cleaned_answer)
+                        st.success(cleaned)
 
-                    pdf_url = find_medsafe_link(cleaned_answer)
-                    if pdf_url:
-                        st.markdown(f"📄 [View full Medsafe Consumer Info PDF]({pdf_url})", unsafe_allow_html=True)
+                    # Show PDF link
+                    pdf = find_medsafe_link(cleaned)
+                    if pdf:
+                        st.markdown(f"📄 [View full Medsafe Consumer Info PDF]({pdf})", unsafe_allow_html=True)
                 else:
                     st.error(L["error"])
             except Exception as e:
                 st.error(f"Error: {str(e)}")
 
-# --- Disclaimer ---
+st.markdown("</div>", unsafe_allow_html=True)
+
+# Disclaimer
 st.markdown(f"""
 <div style='text-align: center; color: grey; font-size: 0.9em; margin-top: 40px;'>
 {L["disclaimer"]}
 </div>
 """, unsafe_allow_html=True)
 
-# --- Privacy policy ---
+# Privacy
 with st.expander("🔐 Privacy Policy – Click to expand"):
     st.markdown("""
     ### 🛡️ Pill-AI Privacy Policy (Prototype Version)
 
+    Welcome to Pill-AI - your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
+
     **📌 What we collect**  
-    – The questions you type into the chat box
+    When you use Pill-AI, we store:  
+    – The questions you type into the chat box  
+    This helps us understand how people are using the tool and improve it during testing.
 
     **🔁 Who else is involved**  
-    – OpenAI (answers), Streamlit (host), Google (possible hosting/logging)
+    Pill-AI uses services from:  
+    – OpenAI (for generating answers)  
+    – Streamlit (to host the app)  
+    – Google (possibly for hosting, analytics, or error logging)
 
     **👶 Users under 16**  
-    – Ask a parent before using. No names/emails are collected.
+    Pill-AI can be used by people under 16. We don’t ask for names, emails, or personal details.  
+    If you're under 16, please ask a parent or guardian before using Pill-AI.
 
     **🗑️ Data won’t be kept forever**  
-    – This is a prototype. Your questions will be deleted after testing ends.
+    This is just a prototype. All stored data will be deleted once testing is over.
 
     **📬 Questions?**  
-    Email: pillai.nz.contact@gmail.com
+    Contact: pillai.nz.contact@gmail.com
 
-    *Always check with a doctor or pharmacist if you're unsure.*
+    *Always check with a healthcare professional if unsure.*
     """)
