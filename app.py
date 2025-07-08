@@ -55,6 +55,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Logo
+
 def get_base64_image(path):
     with open(path, "rb") as img_file:
         return f"data:image/png;base64,{base64.b64encode(img_file.read()).decode()}"
@@ -170,6 +171,12 @@ if send_clicked:
                         for score, name, url in pdf_matches:
                             display_name = name.title()
                             st.markdown(f"- [{display_name}]({url})", unsafe_allow_html=True)
+                    else:
+                        st.markdown("""
+                        🔍 No direct Medsafe PDF found for this topic.  
+                        You can manually search Medsafe Consumer Info here:  
+                        👉 [Medsafe CMI Search](https://www.medsafe.govt.nz/Consumers/CMI/CMI.asp)
+                        """, unsafe_allow_html=True)
                 else:
                     st.error(L["error"])
             except Exception as e:
