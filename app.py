@@ -23,6 +23,7 @@ st.markdown("""
     <style>
     body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
     html[lang='zh'] body { font-family: 'Noto Sans SC', sans-serif !important; }
+    html[lang='hi'] body { font-family: 'Noto Sans Devanagari', sans-serif !important; }
     .stTextInput input {
         background-color: #eeeeee !important;
         color: #000000 !important;
@@ -32,6 +33,9 @@ st.markdown("""
         border-radius: 6px !important;
         box-shadow: none !important;
     }
+    div:empty {
+    display: none !important;
+}
     .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
     .stButton button {
         background-color: #3b82f6;
@@ -50,11 +54,11 @@ st.markdown("""
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         margin-bottom: 2rem;
     }
-    div:empty { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
 # Logo
+
 def get_base64_image(path):
     with open(path, "rb") as img_file:
         return f"data:image/png;base64,{base64.b64encode(img_file.read()).decode()}"
@@ -64,7 +68,7 @@ if os.path.exists("pillai_logo.png"):
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
 # Language select
-language = st.selectbox("🌐 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
+language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"])
 
 # Labels
 labels = {
@@ -102,6 +106,7 @@ def find_medsafe_links(answer_text, top_n=5):
         key_clean = key.lower().replace("source_", "").replace("_", " ").replace(",", "")
         key_tokens = set(re.findall(r"\b[a-zA-Z0-9]+\b", key_clean))
 
+        # Only count matches with exact token overlap (excluding common terms)
         core_matches = answer_keywords & key_tokens
         if len(core_matches) == 0:
             continue
@@ -153,7 +158,9 @@ if send_clicked:
                     lang_codes = {
                         "Te Reo Māori": "mi",
                         "Samoan": "sm",
-                        "Mandarin": "zh-CN"
+                        "Spanish": "es",
+                        "Mandarin": "zh-CN",
+                        "Hindi": "hi"
                     }
                     if language in lang_codes:
                         translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
