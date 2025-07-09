@@ -3,27 +3,25 @@ import openai
 import os
 import re
 import base64
-import json
 from deep_translator import GoogleTranslator
-
-# Load Medsafe PDF links
-try:
-    with open("medsafe_source_links_cleaned.json", "r") as f:
-        medsafe_links = json.load(f)
-except Exception as e:
-    medsafe_links = {}
-    st.warning(f"Could not load Medsafe links: {e}")
 
 # Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
-# Custom CSS
+# 🔧 Fonts & Custom CSS
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
     <style>
-    body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
-    html[lang='zh'] body { font-family: 'Noto Sans SC', sans-serif !important; }
-    html[lang='hi'] body { font-family: 'Noto Sans Devanagari', sans-serif !important; }
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    html[lang='zh'] body {
+        font-family: 'Noto Sans SC', sans-serif !important;
+    }
+    html[lang='hi'] body {
+        font-family: 'Noto Sans Devanagari', sans-serif !important;
+    }
     .stTextInput input {
         background-color: #eeeeee !important;
         color: #000000 !important;
@@ -32,11 +30,12 @@ st.markdown("""
         border: 2px solid black !important;
         border-radius: 6px !important;
         box-shadow: none !important;
+        transition: border 0.3s ease-in-out;
     }
-    div:empty {
-    display: none !important;
-}
-    .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
+    .stTextInput input:focus {
+        border: 2px solid orange !important;
+        outline: none !important;
+    }
     .stButton button {
         background-color: #3b82f6;
         color: white;
@@ -44,9 +43,20 @@ st.markdown("""
         padding: 0.5em 1.2em;
         border-radius: 8px;
         margin-top: 14px !important;
+        transition: background-color 0.3s ease;
     }
-    .stButton button:hover { background-color: #2563eb; }
-    .block-container { padding-top: 2rem; padding-bottom: 2rem; }
+    .stButton button:hover {
+        background-color: #2563eb;
+    }
+    div[data-testid="column"] {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
     .section {
         background-color: #ffffff;
         padding: 2rem;
@@ -57,20 +67,26 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Logo
-
+# 🖼 Logo
 def get_base64_image(path):
     with open(path, "rb") as img_file:
-        return f"data:image/png;base64,{base64.b64encode(img_file.read()).decode()}"
+        b64 = base64.b64encode(img_file.read()).decode()
+    return f"data:image/png;base64,{b64}"
 
-if os.path.exists("pillai_logo.png"):
-    logo_base64 = get_base64_image("pillai_logo.png")
-    st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
+logo_base64 = get_base64_image("pillai_logo.png")
+st.markdown(f"""
+<div style='text-align: center;'>
+    <img src='{logo_base64}' width='240' style='margin-bottom: 10px;'>
+</div>
+""", unsafe_allow_html=True)
 
-# Language select
-language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"])
+# 🌐 Language selector
+language = st.selectbox(
+    "🌐 Choose answer language:",
+    ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"]
+)
 
-# Labels
+# UI Labels
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
@@ -80,11 +96,56 @@ labels = {
         "empty": "Please enter a question.",
         "error": "The assistant failed to complete the request.",
         "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP."
+    },
+    "Te Reo Māori": {
+        "prompt": "Pātai he pātai mō te rongoā:",
+        "placeholder": "Tuhia tō pātai ki konei...",
+        "send": "Tukua",
+        "thinking": "E whakaaro ana...",
+        "empty": "Tēnā, whakaurua he pātai.",
+        "error": "I rahua te kaiwhina ki te whakautu.",
+        "disclaimer": "⚠️ Ehara a Pill-AI i te tohutohu hauora mō te tangata. Me pātai tonu ki tō rata, ki te rongoā hoki."
+    },
+    "Samoan": {
+        "prompt": "Fesili i se fesili e uiga i fualaau:",
+        "placeholder": "Tusi i lau fesili i lalo...",
+        "send": "Auina atu",
+        "thinking": "O lo’o mafaufau...",
+        "empty": "Fa’amolemole tusia se fesili.",
+        "error": "E le’i mafai ona tali mai le fesoasoani.",
+        "disclaimer": "⚠️ E le suitulaga Pill-AI i fautuaga faafomai. Fesili i lau foma’i po’o le fale talavai."
+    },
+    "Spanish": {
+        "prompt": "Haz una pregunta sobre medicamentos:",
+        "placeholder": "Escribe tu pregunta aquí...",
+        "send": "Enviar",
+        "thinking": "Pensando...",
+        "empty": "Por favor, escribe una pregunta.",
+        "error": "El asistente no pudo completar la solicitud.",
+        "disclaimer": "⚠️ Pill-AI no sustituye el consejo médico profesional. Consulta siempre a un farmacéutico o médico."
+    },
+    "Mandarin": {
+        "prompt": "请提出一个有关药物的问题：",
+        "placeholder": "在此输入您的问题…",
+        "send": "发送",
+        "thinking": "思考中...",
+        "empty": "请输入一个问题。",
+        "error": "助手未能完成请求。",
+        "disclaimer": "⚠️ Pill-AI 不能替代专业医疗建议。如有疑问，请咨询医生或药剂师。"
+    },
+    "Hindi": {
+        "prompt": "दवा से संबंधित एक प्रश्न पूछें:",
+        "placeholder": "अपना प्रश्न यहां लिखें...",
+        "send": "भेजें",
+        "thinking": "सोचा जा रहा है...",
+        "empty": "कृपया एक प्रश्न दर्ज करें।",
+        "error": "सहायक अनुरोध पूरा नहीं कर सका।",
+        "disclaimer": "⚠️ Pill-AI पेशेवर चिकित्सा सलाह का विकल्प नहीं है। हमेशा डॉक्टर या फार्मासिस्ट से परामर्श लें।"
     }
 }
 L = labels[language]
 
-# OpenAI setup
+# 🔐 API Setup
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
     st.error("OpenAI API key is not configured.")
@@ -94,77 +155,18 @@ client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 
 if "thread_id" not in st.session_state:
-    st.session_state["thread_id"] = client.beta.threads.create().id
+    thread = client.beta.threads.create()
+    st.session_state["thread_id"] = thread.id
 
-# Stricter Medsafe link matcher based on drug name appearance only
-def find_medsafe_links(answer_text, top_n=5):
-    answer = answer_text.lower()
-    answer_keywords = set(re.findall(r"\b[a-zA-Z0-9]+\b", answer))
-    matches = []
-
-    for key, url in medsafe_links.items():
-        key_clean = key.lower().replace("source_", "").replace("_", " ").replace(",", "")
-        key_tokens = set(re.findall(r"\b[a-zA-Z0-9]+\b", key_clean))
-
-        # Only count matches with exact token overlap (excluding common terms)
-        core_matches = answer_keywords & key_tokens
-        if len(core_matches) == 0:
-            continue
-
-        score = len(core_matches) / len(key_tokens)
-        matches.append((score, key_clean, url))
-
-    matches.sort(reverse=True)
-    return matches[:top_n]
-
-# UI
+# 💬 UI Input Section
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
-st.markdown("""
-<style>
-.chat-input-container {
-    display: flex;
-    justify-content: center;
-    gap: 0;
-    margin-top: 1.5rem;
-}
 
-.chat-input {
-    flex: 1;
-    max-width: 600px;
-    font-size: 1rem;
-    padding: 12px 16px;
-    border: 1px solid #ccc;
-    border-right: none;
-    border-radius: 12px 0 0 12px;
-    outline: none;
-    background-color: white;
-    color: black;
-}
-
-.chat-button {
-    padding: 12px 20px;
-    border: 1px solid #3b82f6;
-    border-left: none;
-    background-color: #3b82f6;
-    color: white;
-    font-size: 1rem;
-    border-radius: 0 12px 12px 0;
-    cursor: pointer;
-}
-
-.chat-button:hover {
-    background-color: #2563eb;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# Layout using columns to center
-col1, col2, col3 = st.columns([1, 6, 1])
+col1, col2 = st.columns([4, 1])
+with col1:
+    user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
 with col2:
-    user_question = st.text_input("", placeholder=L["placeholder"], key="question_input", label_visibility="collapsed")
-    send_clicked = st.button(L["send"], use_container_width=False)
-
+    send_clicked = st.button(L["send"])
 
 if send_clicked:
     if not user_question.strip():
@@ -193,7 +195,7 @@ if send_clicked:
                     messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"])
                     latest = messages.data[0]
                     raw_answer = latest.content[0].text.value
-                    cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
+                    cleaned_answer = re.sub(r'【[^】]*】', '', raw_answer).strip()
 
                     lang_codes = {
                         "Te Reo Māori": "mi",
@@ -203,31 +205,17 @@ if send_clicked:
                         "Hindi": "hi"
                     }
                     if language in lang_codes:
-                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
+                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned_answer)
                         st.success(translated)
                     else:
-                        st.success(cleaned)
-
-                    pdf_matches = find_medsafe_links(cleaned)
-                    if pdf_matches:
-                        st.markdown("\n**📄 Related Medsafe Consumer Info PDFs:**")
-                        for score, name, url in pdf_matches:
-                            display_name = name.title()
-                            st.markdown(f"- [{display_name}]({url})", unsafe_allow_html=True)
-                    else:
-                        st.markdown("""
-                        🔍 No direct Medsafe PDF found for this topic.  
-                        You can manually search Medsafe Consumer Info here:  
-                        👉 [Medsafe CMI Search](https://www.medsafe.govt.nz/Consumers/CMI/CMI.asp)
-                        """, unsafe_allow_html=True)
+                        st.success(cleaned_answer)
                 else:
                     st.error(L["error"])
             except Exception as e:
                 st.error(f"Error: {str(e)}")
-
 st.markdown("</div>", unsafe_allow_html=True)
 
-# Disclaimer
+# ⚠️ Disclaimer
 st.markdown(f"""
 <div style='text-align: center; color: grey; font-size: 0.9em; margin-top: 40px;'>
 {L["disclaimer"]}
@@ -239,7 +227,7 @@ with st.expander("🔐 Privacy Policy – Click to expand"):
     st.markdown("""
     ### 🛡️ Pill-AI Privacy Policy (Prototype Version)
 
-    Welcome to Pill-AI — your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
+    Welcome to Pill-AI - your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
 
     **📌 What we collect**  
     When you use Pill-AI, we store:  
@@ -254,7 +242,7 @@ with st.expander("🔐 Privacy Policy – Click to expand"):
     These platforms may collect some technical data like your device type or browser, but not your name.
 
     **👶 Users under 16**  
-    Pill-AI can be used by people under 16. We don’t ask for names, emails, or personal details — just medicine-related questions.  
+    Pill-AI can be used by people under 16. We don’t ask for names, emails, or personal details - just medicine-related questions.  
     If you're under 16, please ask a parent or guardian before using Pill-AI.
 
     **🗑️ Data won’t be kept forever**  
