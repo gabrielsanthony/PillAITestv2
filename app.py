@@ -120,11 +120,20 @@ def find_medsafe_links(answer_text, top_n=5):
 # UI
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
-col1, col2 = st.columns([4, 1])
-with col1:
-    user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
-with col2:
-    send_clicked = st.button(L["send"])
+st.markdown("""
+<div style='display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; margin-bottom: 20px;'>
+  <input type='text' name='question_input' id='question_input' placeholder='""" + L["placeholder"] + """'
+         style='flex: 1; max-width: 500px; padding: 10px; font-size: 1.2em; border: 2px solid black; border-radius: 6px;' />
+  <button onclick='document.getElementById("submit_button").click()'
+          style='background-color: #3b82f6; color: white; font-size: 1.1em; padding: 0.5em 1.2em; border-radius: 8px; border: none;'>
+    """ + L["send"] + """
+  </button>
+</div>
+""", unsafe_allow_html=True)
+
+user_question = st.text_input(label="", key="question_input")
+send_clicked = st.button(L["send"], key="submit_button")
+
 
 if send_clicked:
     if not user_question.strip():
