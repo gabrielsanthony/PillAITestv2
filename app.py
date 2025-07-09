@@ -64,6 +64,10 @@ st.markdown("""
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         margin-bottom: 2rem;
     }
+    div:empty {
+    display: none !important;
+}
+
     </style>
 """, unsafe_allow_html=True)
 
