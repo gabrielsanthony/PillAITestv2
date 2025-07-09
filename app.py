@@ -8,48 +8,43 @@ from deep_translator import GoogleTranslator
 # Page config
 st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
 
-# 🔧 Fonts & Custom CSS
+# Custom CSS
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
     <style>
-    body {
-        background-color: #f4f6f9;
-        font-family: 'Segoe UI', sans-serif;
-    }
-    html[lang='zh'] body {
-        font-family: 'Noto Sans SC', sans-serif !important;
-    }
-    html[lang='hi'] body {
-        font-family: 'Noto Sans Devanagari', sans-serif !important;
-    }
-  stTextInput input {
-    background-color: #eeeeee !important;
-    color: #000000 !important;
-    font-size: 1.2em !important;
-    padding: 10px !important;
-    border: 2px solid black !important;
-    border-radius: 6px !important;
-    box-shadow: none !important;
-    transition: border 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
+    body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+    html[lang='zh'] body { font-family: 'Noto Sans SC', sans-serif !important; }
+    html[lang='hi'] body { font-family: 'Noto Sans Devanagari', sans-serif !important; }
 
-.stTextInput input:focus {
-    border: 2px solid orange !important;
-    outline: none !important;
-}
-
-/* 🌙 Dark mode style */
-@media (prefers-color-scheme: dark) {
     .stTextInput input {
-        background-color: #1e1e1e !important;
-        color: #ffffff !important;
-        border: 2px solid #888 !important;
+        background-color: #eeeeee !important;
+        color: #000000 !important;
+        font-size: 1.2em !important;
+        padding: 10px !important;
+        border: 2px solid black !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
+        transition: border 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
     }
 
     .stTextInput input:focus {
         border: 2px solid orange !important;
+        outline: none !important;
     }
-}
+
+    /* Dark mode adaptation */
+    @media (prefers-color-scheme: dark) {
+        .stTextInput input {
+            background-color: #1e1e1e !important;
+            color: #ffffff !important;
+            border: 2px solid #888 !important;
+        }
+
+        .stTextInput input:focus {
+            border: 2px solid orange !important;
+        }
+    }
+
     .stButton button {
         background-color: #3b82f6;
         color: white;
@@ -57,20 +52,12 @@ st.markdown("""
         padding: 0.5em 1.2em;
         border-radius: 8px;
         margin-top: 14px !important;
-        transition: background-color 0.3s ease;
     }
-    .stButton button:hover {
-        background-color: #2563eb;
-    }
-    div[data-testid="column"] {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
+
+    .stButton button:hover { background-color: #2563eb; }
+
+    .block-container { padding-top: 2rem; padding-bottom: 2rem; }
+
     .section {
         background-color: #ffffff;
         padding: 2rem;
@@ -78,10 +65,10 @@ st.markdown("""
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         margin-bottom: 2rem;
     }
-    div:empty {
-    display: none !important;
-}
 
+    div:empty {
+        display: none !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
