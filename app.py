@@ -120,11 +120,51 @@ def find_medsafe_links(answer_text, top_n=5):
 # UI
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
-col1, col2, col3 = st.columns([1, 4, 1])
+st.markdown("""
+<style>
+.chat-input-container {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-top: 1.5rem;
+}
 
+.chat-input {
+    flex: 1;
+    max-width: 600px;
+    font-size: 1rem;
+    padding: 12px 16px;
+    border: 1px solid #ccc;
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+    outline: none;
+    background-color: white;
+    color: black;
+}
+
+.chat-button {
+    padding: 12px 20px;
+    border: 1px solid #3b82f6;
+    border-left: none;
+    background-color: #3b82f6;
+    color: white;
+    font-size: 1rem;
+    border-radius: 0 12px 12px 0;
+    cursor: pointer;
+}
+
+.chat-button:hover {
+    background-color: #2563eb;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Layout using columns to center
+col1, col2, col3 = st.columns([1, 6, 1])
 with col2:
-    user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
-    send_clicked = st.button(L["send"])
+    user_question = st.text_input("", placeholder=L["placeholder"], key="question_input", label_visibility="collapsed")
+    send_clicked = st.button(L["send"], use_container_width=False)
+
 
 if send_clicked:
     if not user_question.strip():
