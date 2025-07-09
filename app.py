@@ -33,6 +33,9 @@ st.markdown("""
         border-radius: 6px !important;
         box-shadow: none !important;
     }
+    div:empty {
+    display: none !important;
+}
     .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
     .stButton button {
         background-color: #3b82f6;
