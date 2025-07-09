@@ -22,20 +22,34 @@ st.markdown("""
     html[lang='hi'] body {
         font-family: 'Noto Sans Devanagari', sans-serif !important;
     }
+  stTextInput input {
+    background-color: #eeeeee !important;
+    color: #000000 !important;
+    font-size: 1.2em !important;
+    padding: 10px !important;
+    border: 2px solid black !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+    transition: border 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.stTextInput input:focus {
+    border: 2px solid orange !important;
+    outline: none !important;
+}
+
+/* 🌙 Dark mode style */
+@media (prefers-color-scheme: dark) {
     .stTextInput input {
-        background-color: #eeeeee !important;
-        color: #000000 !important;
-        font-size: 1.2em !important;
-        padding: 10px !important;
-        border: 2px solid black !important;
-        border-radius: 6px !important;
-        box-shadow: none !important;
-        transition: border 0.3s ease-in-out;
+        background-color: #1e1e1e !important;
+        color: #ffffff !important;
+        border: 2px solid #888 !important;
     }
+
     .stTextInput input:focus {
         border: 2px solid orange !important;
-        outline: none !important;
     }
+}
     .stButton button {
         background-color: #3b82f6;
         color: white;
