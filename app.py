@@ -25,54 +25,97 @@ st.markdown("""
         background: linear-gradient(to bottom right, #f4f6f9, #e0f7fa);
         font-family: 'Segoe UI', sans-serif;
     }
+
     html[lang='zh'] body { font-family: 'Noto Sans SC', sans-serif !important; }
+
     .stTextInput input {
-        background-color: #eeeeee !important;
+        background-color: #ffffff !important;
         color: #000000 !important;
-        font-size: 1.2em !important;
-        padding: 10px !important;
-        border: 2px solid black !important;
-        border-radius: 6px !important;
-        box-shadow: none !important;
+        font-size: 1.1em !important;
+        padding: 10px 14px !important;
+        border: 2px solid #009688 !important;
+        border-radius: 8px !important;
     }
-    div:empty { display: none !important; }
-    .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
+
+    .stTextInput input:focus {
+        border: 2px solid #FF6F00 !important;
+        outline: none !important;
+    }
+
     .stButton button {
-        background-color: #3b82f6;
-        color: white;
-        font-size: 1.1em;
+        background-color: #FF6F00 !important;
+        color: white !important;
+        font-size: 1.05em;
         padding: 0.5em 1.2em;
         border-radius: 8px;
-        margin-top: 14px !important;
+        border: none;
+        transition: background-color 0.3s ease;
     }
-    .stButton button:hover { background-color: #2563eb; }
-    .block-container { padding-top: 2rem; padding-bottom: 2rem; }
+
+    .stButton button:hover {
+        background-color: #F4511E !important;
+    }
+
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
     .section {
-        background-color: #ffffff;
+        background-color: white;
         padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 150, 136, 0.1);
         margin-bottom: 2rem;
     }
+
+    .banner {
+        background-color: #E0F2F1;
+        color: #00796B;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-weight: 500;
+        font-size: 1em;
+    }
+
+    .tip {
+        background-color: #FFF3E0;
+        color: #EF6C00;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 0.95em;
+        font-style: italic;
+    }
+
+    .stSelectbox > div {
+        border: 2px solid #009688 !important;
+        border-radius: 8px !important;
+        padding: 6px;
+    }
+
+    .stSelectbox div[data-baseweb="select"] > div {
+        border: none !important;
+    }
+
+    div:empty { display: none !important; }
+
+    .disclaimer {
+        font-size: 0.9em;
+        color: grey;
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    img[src*="pillai_logo"] {
+        animation: float 3s ease-in-out infinite;
+    }
+
     @keyframes float {
         0% { transform: translateY(0px); }
         50% { transform: translateY(-6px); }
         100% { transform: translateY(0px); }
-    }
-    img[src*="pillai_logo"] {
-        animation: float 3s ease-in-out infinite;
-    }
-    .stSelectbox div[data-baseweb="select"] {
-        margin-top: 6px;
-        font-size: 1.05em;
-        padding: 6px;
-    }
-    .stSelectbox div[data-baseweb="select"] > div {
-        border: 1px solid #ccc !important;
-        border-radius: 6px !important;
-    }
-    .stSelectbox div[data-baseweb="select"]:hover {
-        border-color: #999 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -233,17 +276,7 @@ Imeli: pillai.nz.contact@gmail.com
 L = labels.get(language, labels["English"])
 
 st.markdown(f"""
-    <div style='
-        background: #e0f7fa;
-        border-left: 6px solid #00acc1;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-size: 1em;
-        margin-bottom: 1.2rem;
-        color: #006064;
-    '>
-        💊 <strong>{L["tagline"]}</strong>
-    </div>
+    <div class="banner">💊 <strong>{L["tagline"]}</strong></div>
 """, unsafe_allow_html=True)
 
 # API key
@@ -263,17 +296,7 @@ lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 st.markdown(f"""
-<div style='
-    background-color: #e0f7f7;
-    padding: 8px 12px;
-    border-left: 4px solid #008080;
-    border-radius: 6px;
-    font-size: 0.95em;
-    color: #004d4d;
-    margin-bottom: 10px;
-'>
-{L['subtitle']}
-</div>
+    <div class="tip">{L['subtitle']}</div>
 """, unsafe_allow_html=True)
 
 
