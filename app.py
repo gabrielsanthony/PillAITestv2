@@ -22,9 +22,9 @@ st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
     <style>
     body {
-    background: linear-gradient(to bottom right, #f4f6f9, #e0f7fa);
-    font-family: 'Segoe UI', sans-serif;
-}
+        background: linear-gradient(to bottom right, #f4f6f9, #e0f7fa);
+        font-family: 'Segoe UI', sans-serif;
+    }
     html[lang='zh'] body { font-family: 'Noto Sans SC', sans-serif !important; }
     .stTextInput input {
         background-color: #eeeeee !important;
@@ -55,14 +55,25 @@ st.markdown("""
         margin-bottom: 2rem;
     }
     @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0px); }
-}
-img[src*="pillai_logo"] {
-  animation: float 3s ease-in-out infinite;
-}
-
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-6px); }
+        100% { transform: translateY(0px); }
+    }
+    img[src*="pillai_logo"] {
+        animation: float 3s ease-in-out infinite;
+    }
+    .stSelectbox div[data-baseweb="select"] {
+        margin-top: 6px;
+        font-size: 1.05em;
+        padding: 6px;
+    }
+    .stSelectbox div[data-baseweb="select"] > div {
+        border: 1px solid #ccc !important;
+        border-radius: 6px !important;
+    }
+    .stSelectbox div[data-baseweb="select"]:hover {
+        border-color: #999 !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -74,6 +85,7 @@ def get_base64_image(path):
 if os.path.exists("pillai_logo.png"):
     logo_base64 = get_base64_image("pillai_logo.png")
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
+
 st.markdown("""
     <div style='
         text-align: center;
@@ -89,153 +101,64 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-
 # Language select
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
 
-# Labels (multilingual UI)
+# Labels
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
         "placeholder": "Type your question here...",
+        "subtitle": "💡 Try asking about side effects, uses, or combinations — e.g. <i>Can I take ibuprofen and Panadol together?</i>",
         "send": "Send",
         "thinking": "Thinking...",
         "empty": "Please enter a question.",
         "error": "The assistant failed to complete the request.",
         "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP.",
         "privacy_title": "🔐 Privacy Policy – Click to expand",
-        "privacy": """
-### 🛡️ Pill-AI Privacy Policy (Prototype Version)
-
-Welcome to Pill-AI — your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
-
-**📌 What we collect**  
-– The questions you type into the chat box  
-
-**🔁 Who else is involved**  
-– OpenAI (for generating answers)  
-– Streamlit (to host the app)  
-– Google (hosting/analytics)
-
-**👶 Users under 16**  
-No names, emails or personal details are asked.  
-
-**🗑️ Temporary data**  
-This is a prototype. All data will be deleted after testing.  
-
-**📬 Questions?**  
-Contact us: pillai.nz.contact@gmail.com
-
-*Pill-AI is not a substitute for professional medical advice.*
-"""
+        "privacy": """..."""
     },
     "Te Reo Māori": {
         "prompt": "Pātaihia tētahi pātai e pā ana ki te rongoā:",
         "placeholder": "Tuhia tō pātai ki konei...",
+        "subtitle": "💡 Me pātai mō ngā pānga taha, ngā whakamahinga, rānei — hei tauira: <i>Ka pai rānei te tango i te ibuprofen me te Panadol i te wā kotahi?</i>",
         "send": "Tukua",
         "thinking": "E whakaaro ana...",
         "empty": "Tēnā koa, tuhia he pātai.",
         "error": "I rahua te kaiawhina ki te whakaoti i te tono.",
         "disclaimer": "⚠️ Ehara a Pill-AI i te kaiārahi hauora tōtika. Me toro atu ki te rata, te kai rongoā rānei.",
         "privacy_title": "🔐 Kaupapahere Tūmataiti – Pāwhiritia kia kite",
-        "privacy": """
-### 🛡️ Kaupapahere Tūmataiti o Pill-AI (Putanga Whakamātau)
-
-Nau mai ki a Pill-AI — tō kaiāwhina rongoā pono. He putanga whakamātau tēnei hei āwhina i te iwi kia mārama ki ā rātou rongoā mā ngā rauemi Medsafe.
-
-**📌 Ka kohia**  
-– Ngā pātai e patopato ai koe  
-
-**🔁 Ko wai anō e uru ana**  
-– OpenAI (hei waihanga whakautu)  
-– Streamlit  
-– Google (hei whakahaere, aromatawai hoki)
-
-**👶 Tamariki i raro i te 16**  
-Kāore mātou e kohi i ngā ingoa, īmēra, aha atu rānei.
-
-**🗑️ Raraunga poto noa**  
-Ka mukua ngā raraunga i muri i te wā whakamātau.
-
-**📬 Pātai?**  
-Whakapā mai: pillai.nz.contact@gmail.com
-
-*Ehara a Pill-AI i te kaiāwhina rongoā tōtika.*
-"""
+        "privacy": """..."""
     },
     "Samoan": {
         "prompt": "Fesili i se fesili e uiga i fualaau:",
         "placeholder": "Tusi i lau fesili iinei...",
+        "subtitle": "💡 Fesili i auga o le fualaau, auala e fa'aaoga ai, po'o le fa'afefiloi — fa'ata'ita'iga: <i>E mafai ona ou inuina le ibuprofen ma le Panadol i le taimi e tasi?</i>",
         "send": "Auina atu",
         "thinking": "O mafaufau...",
         "empty": "Fa'amolemole tusia se fesili.",
         "error": "Le mafai e le fesoasoani ona tali atu.",
         "disclaimer": "⚠️ E le suitulaga Pill-AI i se foma'i moni. Fa'amolemole fa'afeso'ota'i se foma'i po'o se fomai fai fualaau.",
         "privacy_title": "🔐 Faiga Fa'alilolilo – Kiliki e faitau",
-        "privacy": """
-### 🛡️ Faiga Fa'alilolilo a Pill-AI (Fa'ata'ita'iga)
-
-Afio mai i Pill-AI — lau fesoasoani i fualaau. O se fa'ata'ita'iga lenei e fesoasoani i tagata ia malamalama i fualaau e fa'aaogaina ai fa'amatalaga mai Medsafe.
-
-**📌 Mea matou te pueina**  
-– Fesili e te tusia  
-
-**🔁 O ai e fesoasoani**  
-– OpenAI  
-– Streamlit  
-– Google  
-
-**👶 I lalo o le 16 tausaga**  
-Matou te le aoina ni igoa po'o ni fa'amatalaga patino.
-
-**🗑️ Fa'amatalaga le tumau**  
-O le fa'ata'ita'iga lenei. O le a tapea uma a matou fa'amaumauga.
-
-**📬 Fesili?**  
-Fa'afeso'ota'i mai: pillai.nz.contact@gmail.com
-
-*E le suitulaga Pill-AI i se foma'i moni.*
-"""
+        "privacy": """..."""
     },
     "Mandarin": {
         "prompt": "请提出一个与药物有关的问题：",
         "placeholder": "在此输入您的问题...",
+        "subtitle": "💡 请尝试提问副作用、用途或药物组合 — 例如：<i>布洛芬和扑热息痛可以一起吃吗？</i>",
         "send": "发送",
         "thinking": "思考中...",
         "empty": "请输入一个问题。",
         "error": "助手未能完成请求。",
         "disclaimer": "⚠️ Pill-AI 不能替代专业医疗建议。请咨询医生或药剂师。",
         "privacy_title": "🔐 隐私政策 – 点击展开",
-        "privacy": """
-### 🛡️ Pill-AI 隐私政策（测试版）
-
-欢迎使用 Pill-AI — 您值得信赖的用药助手。本工具为测试版本，帮助用户通过 Medsafe 学习药品信息。
-
-**📌 我们收集**  
-– 您输入的问题  
-
-**🔁 相关平台**  
-– OpenAI  
-– Streamlit  
-– Google  
-
-**👶 16 岁以下用户**  
-我们不收集姓名、电邮或个人信息。
-
-**🗑️ 数据临时保存**  
-测试结束后将删除所有数据。
-
-**📬 问题联系**  
-邮箱：pillai.nz.contact@gmail.com
-
-*Pill-AI 不能替代专业医疗建议。*
-"""
+        "privacy": """..."""
     }
 }
 
 L = labels.get(language, labels["English"])
 
-# OpenAI setup
+# API key
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
     st.error("OpenAI API key is not configured.")
@@ -243,21 +166,15 @@ if not api_key:
 
 client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
-
 if "thread_id" not in st.session_state:
     st.session_state["thread_id"] = client.beta.threads.create().id
 
-# Lang code map
-lang_codes = {
-    "Te Reo Māori": "mi",
-    "Samoan": "sm",
-    "Mandarin": "zh-CN"
-}
+lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 
 # UI
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
-st.markdown("""
+st.markdown(f"""
 <div style='
     background-color: #f0f4f8;
     padding: 8px 12px;
@@ -267,7 +184,7 @@ st.markdown("""
     color: #333;
     margin-bottom: 10px;
 '>
-💡 Try asking about side effects, uses, or combinations — e.g. <i>Can I take ibuprofen and Panadol together?</i>
+{L['subtitle']}
 </div>
 """, unsafe_allow_html=True)
 
@@ -281,7 +198,7 @@ if send_clicked:
     if not user_question.strip():
         st.warning(L["empty"])
     else:
-        with st.spinner(L["thinking"]):
+        with st.spinner(f"💬 {L['thinking']}"):
             try:
                 client.beta.threads.messages.create(
                     thread_id=st.session_state["thread_id"],
@@ -305,26 +222,11 @@ if send_clicked:
                     latest = messages.data[0]
                     raw_answer = latest.content[0].text.value
                     cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
-
                     if language in lang_codes:
                         translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
                         st.success(translated)
                     else:
                         st.success(cleaned)
-
-                    pdf_matches = find_medsafe_links(cleaned)
-                    if pdf_matches:
-                        st.markdown("\n**📄 Related Medsafe Consumer Info PDFs:**")
-                        for score, name, url in pdf_matches:
-                            display_name = name.title()
-                            st.markdown(f"- [{display_name}]({url})", unsafe_allow_html=True)
-                    else:
-                        st.markdown("""
-                        🔍 No direct Medsafe PDF found for this topic.  
-                        👉 [Medsafe CMI Search](https://www.medsafe.govt.nz/Consumers/CMI/CMI.asp)
-                        """, unsafe_allow_html=True)
-                else:
-                    st.error(L["error"])
             except Exception as e:
                 st.error(f"Error: {str(e)}")
 
@@ -337,6 +239,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Privacy Policy
+# Privacy
 with st.expander(L["privacy_title"]):
     st.markdown(L["privacy"])
