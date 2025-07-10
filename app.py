@@ -21,7 +21,10 @@ st.set_page_config(page_title="Pill-AI 2.0", page_icon="💊", layout="centered"
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
     <style>
-    body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+    body {
+    background: linear-gradient(to bottom right, #f4f6f9, #e0f7fa);
+    font-family: 'Segoe UI', sans-serif;
+}
     html[lang='zh'] body { font-family: 'Noto Sans SC', sans-serif !important; }
     .stTextInput input {
         background-color: #eeeeee !important;
