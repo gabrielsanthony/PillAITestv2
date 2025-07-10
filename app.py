@@ -54,6 +54,11 @@ st.markdown("""
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         margin-bottom: 2rem;
     }
+    .spinner {
+    font-style: italic;
+    color: #888;
+}
+
     </style>
 """, unsafe_allow_html=True)
 
@@ -89,7 +94,7 @@ labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
         "placeholder": "Type your question here...",
-        "send": "Send",
+        "": "",
         "thinking": "Thinking...",
         "empty": "Please enter a question.",
         "error": "The assistant failed to complete the request.",
@@ -123,7 +128,7 @@ Contact us: pillai.nz.contact@gmail.com
     "Te Reo Māori": {
         "prompt": "Pātaihia tētahi pātai e pā ana ki te rongoā:",
         "placeholder": "Tuhia tō pātai ki konei...",
-        "send": "Tukua",
+        "": "Tukua",
         "thinking": "E whakaaro ana...",
         "empty": "Tēnā koa, tuhia he pātai.",
         "error": "I rahua te kaiawhina ki te whakaoti i te tono.",
@@ -157,7 +162,7 @@ Whakapā mai: pillai.nz.contact@gmail.com
     "Samoan": {
         "prompt": "Fesili i se fesili e uiga i fualaau:",
         "placeholder": "Tusi i lau fesili iinei...",
-        "send": "Auina atu",
+        "": "Auina atu",
         "thinking": "O mafaufau...",
         "empty": "Fa'amolemole tusia se fesili.",
         "error": "Le mafai e le fesoasoani ona tali atu.",
@@ -191,7 +196,7 @@ Fa'afeso'ota'i mai: pillai.nz.contact@gmail.com
     "Mandarin": {
         "prompt": "请提出一个与药物有关的问题：",
         "placeholder": "在此输入您的问题...",
-        "send": "发送",
+        "": "发送",
         "thinking": "思考中...",
         "empty": "请输入一个问题。",
         "error": "助手未能完成请求。",
@@ -258,7 +263,7 @@ if send_clicked:
     if not user_question.strip():
         st.warning(L["empty"])
     else:
-        with st.spinner(L["thinking"]):
+        with st.spinner(f"💬 {L['thinking']}"):
             try:
                 client.beta.threads.messages.create(
                     thread_id=st.session_state["thread_id"],
