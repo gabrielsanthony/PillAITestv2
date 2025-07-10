@@ -89,20 +89,6 @@ if os.path.exists("pillai_logo.png"):
 # Language select
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
 
-st.markdown(f"""
-    <div style='
-        text-align: center;
-        font-size: 1.1em;
-        background-color: #e6f4ff;
-        padding: 10px 20px;
-        margin-bottom: 1rem;
-        border-radius: 10px;
-        border: 1px solid #cce4f7;
-        color: #333;
-    '>
-        💊 <i>{L["tagline"]}</i>
-    </div>
-""", unsafe_allow_html=True)
 
 # Labels
 labels = {
@@ -245,6 +231,21 @@ Imeli: pillai.nz.contact@gmail.com
 }
 
 L = labels.get(language, labels["English"])
+
+st.markdown(f"""
+    <div style='
+        text-align: center;
+        font-size: 1.1em;
+        background-color: #e6f4ff;
+        padding: 10px 20px;
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        border: 1px solid #cce4f7;
+        color: #333;
+    '>
+        💊 <i>{L["tagline"]}</i>
+    </div>
+""", unsafe_allow_html=True)
 
 # API key
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
