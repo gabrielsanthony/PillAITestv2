@@ -276,9 +276,11 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("<div style='margin-top: 10px;'>", unsafe_allow_html=True)
-explain_like_12 = st.checkbox("Explain in simple language", value=False)
-st.markdown("</div>", unsafe_allow_html=True)
+col_exp, _ = st.columns([1, 5])
+with col_exp:
+    st.markdown("<div style='margin-top: 12px;'>", unsafe_allow_html=True)
+    explain_like_12 = st.checkbox("Explain in simple language", value=False)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 col1, col2 = st.columns([4, 1])
 with col1:
