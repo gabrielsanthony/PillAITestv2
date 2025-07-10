@@ -281,7 +281,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 st.markdown("<div style='margin-top: 40px;'></div>", unsafe_allow_html=True)
-explain_like_12 = st.checkbox("🧠 Simplify", value=False)
+explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
 
 col1, col2 = st.columns([4, 1])
 with col1:
