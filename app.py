@@ -287,30 +287,30 @@ if send_clicked:
     if not user_question.strip():
         st.warning(L["empty"])
     else:
-with st.spinner(f"💬 {L['thinking']}"):
-    try:
-        adjusted_question = user_question
-        if explain_like_12:
-            adjusted_question += " Please explain this in simple language suitable for a 12-year-old."
-
-        client.beta.threads.messages.create(
-            thread_id=st.session_state["thread_id"],
-            role="user",
-            content=adjusted_question
-        )
-
-        run = client.beta.threads.runs.create(
-            thread_id=st.session_state["thread_id"],
-            assistant_id=ASSISTANT_ID
-        )
-
-        while True:
-            run_status = client.beta.threads.runs.retrieve(
-                thread_id=st.session_state["thread_id"],
-                run_id=run.id
-            )
-            if run_status.status in ["completed", "failed"]:
-                break
+        with st.spinner(f"💬 {L['thinking']}"):
+            try:
+                adjusted_question = user_question
+                if explain_like_12:
+                    adjusted_question += " Please explain this in simple language suitable for a 12-year-old."
+        
+                client.beta.threads.messages.create(
+                    thread_id=st.session_state["thread_id"],
+                    role="user",
+                    content=adjusted_question
+                )
+        
+                run = client.beta.threads.runs.create(
+                    thread_id=st.session_state["thread_id"],
+                    assistant_id=ASSISTANT_ID
+                )
+        
+                while True:
+                    run_status = client.beta.threads.runs.retrieve(
+                        thread_id=st.session_state["thread_id"],
+                        run_id=run.id
+                    )
+                    if run_status.status in ["completed", "failed"]:
+                        break
 
         if run_status.status == "completed":
             messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"])
