@@ -86,7 +86,23 @@ if os.path.exists("pillai_logo.png"):
     logo_base64 = get_base64_image("pillai_logo.png")
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
-# Language select FIRST so we can show dynamic tagline
+# Initial tagline (before language selection)
+fallback_tagline = "Helping Kiwis understand their medicines using trusted Medsafe info."
+st.markdown(f"""
+    <div style='
+        background: #e0f7fa;
+        border-left: 6px solid #00acc1;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 1em;
+        margin-bottom: 1.2rem;
+        color: #006064;
+    '>
+        💊 <strong>{fallback_tagline}</strong>
+    </div>
+""", unsafe_allow_html=True)
+
+# Language selector
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
 
 # Labels
@@ -229,25 +245,12 @@ Imeli: pillai.nz.contact@gmail.com
     }
 }
 
-# Now we get the selected language’s labels
+
+
+# Get selected labels
 L = labels.get(language, labels["English"])
 
-# Tagline – now shown AFTER language selection, but ABOVE everything else
-st.markdown(f"""
-    <div style='
-        background: #e0f7fa;
-        border-left: 6px solid #00acc1;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-size: 1em;
-        margin-bottom: 1.2rem;
-        color: #006064;
-    '>
-        💊 <strong>{L["tagline"]}</strong>
-    </div>
-""", unsafe_allow_html=True)
-
-# API key
+# OpenAI setup
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
     st.error("OpenAI API key is not configured.")
@@ -260,7 +263,7 @@ if "thread_id" not in st.session_state:
 
 lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 
-# UI
+# UI Section
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 st.markdown(f"""
@@ -295,18 +298,18 @@ if send_clicked:
                 adjusted_question = user_question
                 if explain_like_12:
                     adjusted_question += " Please explain this in simple language suitable for a 12-year-old (MY AGE ISN'T 12 THOUGH)."
-        
+
                 client.beta.threads.messages.create(
                     thread_id=st.session_state["thread_id"],
                     role="user",
                     content=adjusted_question
                 )
-        
+
                 run = client.beta.threads.runs.create(
                     thread_id=st.session_state["thread_id"],
                     assistant_id=ASSISTANT_ID
                 )
-        
+
                 while True:
                     run_status = client.beta.threads.runs.retrieve(
                         thread_id=st.session_state["thread_id"],
@@ -320,16 +323,15 @@ if send_clicked:
                     latest = messages.data[0]
                     raw_answer = latest.content[0].text.value
                     cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
-        
+
                     if language in lang_codes:
                         translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
                         st.success(translated)
                     else:
                         st.success(cleaned)
-        
+
             except Exception as e:
                 st.error(f"Error: {str(e)}")
-
 
 st.markdown("</div>", unsafe_allow_html=True)
 
