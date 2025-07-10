@@ -109,8 +109,7 @@ language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Re
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
-        "placeholder": "Type your question here...",
-        "subtitle": "💡 Try asking about side effects, uses, or combinations — e.g. <i>Can I take ibuprofen and Panadol together?</i>",
+        "placeholder": "💡 Try asking about side effects, uses, or combinations — e.g. <i>Can I take ibuprofen and Panadol together?</i>",
         "send": "Send",
         "thinking": "Thinking...",
         "tagline": "Helping Kiwis understand their medicines using trusted Medsafe info.",
@@ -143,8 +142,7 @@ Contact us: pillai.nz.contact@gmail.com
     },
     "Te Reo Māori": {
         "prompt": "Pātaihia tētahi pātai e pā ana ki te rongoā:",
-        "placeholder": "Tuhia tō pātai ki konei...",
-        "subtitle": "💡 Me pātai mō ngā pānga taha, ngā whakamahinga, rānei — hei tauira: <i>Ka pai rānei te tango i te ibuprofen me te Panadol i te wā kotahi?</i>",
+        "placeholder": "💡 Me pātai mō ngā pānga taha, ngā whakamahinga, rānei — hei tauira: <i>Ka pai rānei te tango i te ibuprofen me te Panadol i te wā kotahi?</i>",
         "send": "Tukua",
         "thinking": "E whakaaro ana...",
         "tagline": "Āwhinatia ngā Kiwi kia mārama ki ā rātou rongoā mā ngā kōrero mai i a Medsafe.",
@@ -177,8 +175,7 @@ Whakapā mai: pillai.nz.contact@gmail.com
     },
     "Samoan": {
         "prompt": "Fesili i se fesili e uiga i fualaau:",
-        "placeholder": "Tusi i lau fesili iinei...",
-        "subtitle": "💡 Fesili i auga o le fualaau, auala e fa'aaoga ai, po'o le fa'afefiloi — fa'ata'ita'iga: <i>E mafai ona ou inuina le ibuprofen ma le Panadol i le taimi e tasi?</i>",
+        "placeholder": "💡 Fesili i auga o le fualaau, auala e fa'aaoga ai, po'o le fa'afefiloi — fa'ata'ita'iga: <i>E mafai ona ou inuina le ibuprofen ma le Panadol i le taimi e tasi?</i>",
         "send": "Auina atu",
         "thinking": "O mafaufau...",
         "tagline": "Fesoasoani i tagata Niu Sila ia malamalama i a latou fualaau e ala i fa'amatalaga fa'atuatuaina mai le Medsafe.",
@@ -211,8 +208,7 @@ Imeli: pillai.nz.contact@gmail.com
     },
     "Mandarin": {
         "prompt": "请提出一个与药物有关的问题：",
-        "placeholder": "在此输入您的问题...",
-        "subtitle": "💡 请尝试提问副作用、用途或药物组合 — 例如：<i>布洛芬和扑热息痛可以一起吃吗？</i>",
+        "placeholder": "💡 请尝试提问副作用、用途或药物组合 — 例如：<i>布洛芬和扑热息痛可以一起吃吗？</i>",
         "send": "发送",
         "thinking": "思考中...",
         "tagline": "通过 Medsafe 的可靠信息帮助新西兰人了解他们的药物。",
@@ -266,19 +262,6 @@ lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 # UI Section
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
-st.markdown(f"""
-<div style='
-    background-color: #e0f7f7;
-    padding: 8px 12px;
-    border-left: 4px solid #008080;
-    border-radius: 6px;
-    font-size: 0.95em;
-    color: #004d4d;
-    margin-bottom: 10px;
-'>
-{L['subtitle']}
-</div>
-""", unsafe_allow_html=True)
 
 st.markdown("<div style='margin-top: 40px;'></div>", unsafe_allow_html=True)
 explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
