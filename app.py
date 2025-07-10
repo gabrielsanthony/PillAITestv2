@@ -37,15 +37,19 @@ st.markdown("""
     }
     div:empty { display: none !important; }
     .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
-    .stButton button {
-        background-color: #3b82f6;
-        color: white;
-        font-size: 1.1em;
-        padding: 0.5em 1.2em;
-        border-radius: 8px;
-        margin-top: 14px !important;
-    }
-    .stButton button:hover { background-color: #2563eb; }
+    ..stButton button {
+    background-color: #0097a7 !important;  /* Teal */
+    color: white !important;
+    font-size: 1.1em !important;
+    padding: 0.5em 1.2em !important;
+    border-radius: 8px !important;
+    border: none !important;
+}
+
+.stButton button:hover {
+    background-color: #007c91 !important;  /* Darker teal on hover */
+}
+
     .block-container { padding-top: 2rem; padding-bottom: 2rem; }
     .section {
         background-color: #ffffff;
