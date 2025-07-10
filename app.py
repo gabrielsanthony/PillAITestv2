@@ -264,11 +264,17 @@ st.write(f"### 💬 {L['prompt']}")
 st.markdown("<div style='margin-top: 40px;'></div>", unsafe_allow_html=True)
 explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
 
-col1, col2 = st.columns([4, 1])
-with col1:
-    user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
-with col2:
-    send_clicked = st.button(L["send"])
+user_question = st.text_input(
+    label="",
+    placeholder=L["placeholder"],
+    key="question_input"
+)
+
+# Treat any non-empty question as a trigger (ENTER pressed)
+send_clicked = user_question.strip() != "" and st.session_state.get("question_submitted") != user_question
+if send_clicked:
+    st.session_state["question_submitted"] = user_question
+
 
 if send_clicked:
     if not user_question.strip():
