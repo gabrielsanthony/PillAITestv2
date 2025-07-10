@@ -261,14 +261,20 @@ lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 
-st.markdown("<div style='margin-top: 40px;'></div>", unsafe_allow_html=True)
-explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
-
 user_question = st.text_input(
     label="",
     placeholder=L["placeholder"],
     key="question_input"
 )
+
+# Add space
+st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
+
+# Centered checkbox
+col_center = st.columns([1, 2, 1])
+with col_center[1]:
+    explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
+
 
 # Treat any non-empty question as a trigger (ENTER pressed)
 send_clicked = user_question.strip() != "" and st.session_state.get("question_submitted") != user_question
