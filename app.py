@@ -287,7 +287,7 @@ if send_clicked:
     if not user_question.strip():
         st.warning(L["empty"])
     else:
-        with st.spinner(f"💬 {L['thinking']}"):
+with st.spinner(f"💬 {L['thinking']}"):
     try:
         adjusted_question = user_question
         if explain_like_12:
