@@ -259,33 +259,11 @@ st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 st.markdown("<div style='color: #777; font-size: 0.9em; margin-bottom: 10px;'>Try asking about side effects, uses, or combinations — e.g. <i>Can I take ibuprofen and Panadol together?</i></div>", unsafe_allow_html=True)
 
-user_question = st.text_input("", placeholder=L["placeholder"], key="question_input")
-
-# Create inline form using st.markdown and st.form
-with st.form(key="question_form", clear_on_submit=False):
-    st.markdown(f"""
-    <div style='display: flex; gap: 10px; align-items: center;'>
-        <input name='user_input' value="{user_question}" placeholder="{L['placeholder']}" style='
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            border: 2px solid #222;
-            font-size: 1.05em;
-        '>
-        <button type='submit' style='
-            background-color: #3b82f6;
-            color: white;
-            padding: 10px 16px;
-            font-size: 1em;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        '>{L['send']}</button>
-    </div>
-    """, unsafe_allow_html=True)
-
-    send_clicked = st.form_submit_button(label="", use_container_width=True)
-
+col1, col2 = st.columns([4, 1])
+with col1:
+    user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
+with col2:
+    send_clicked = st.button(L["send"])
 
 if send_clicked:
     if not user_question.strip():
