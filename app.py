@@ -105,11 +105,10 @@ st.markdown(f"""
 # Language selector
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
 
-# Labels
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
-        "placeholder": "💡 Try asking about side effects, uses, or combinations — e.g. <i>Can I take ibuprofen and Panadol together?</i>",
+        "placeholder": "💡 E.g. Can I take ibuprofen and Panadol together?",
         "send": "Send",
         "thinking": "Thinking...",
         "tagline": "Helping Kiwis understand their medicines using trusted Medsafe info.",
@@ -142,7 +141,7 @@ Contact us: pillai.nz.contact@gmail.com
     },
     "Te Reo Māori": {
         "prompt": "Pātaihia tētahi pātai e pā ana ki te rongoā:",
-        "placeholder": "💡 Me pātai mō ngā pānga taha, ngā whakamahinga, rānei — hei tauira: <i>Ka pai rānei te tango i te ibuprofen me te Panadol i te wā kotahi?</i>",
+        "placeholder": "💡 Hei tauira: Ka pai rānei te tango i te ibuprofen me te Panadol?",
         "send": "Tukua",
         "thinking": "E whakaaro ana...",
         "tagline": "Āwhinatia ngā Kiwi kia mārama ki ā rātou rongoā mā ngā kōrero mai i a Medsafe.",
@@ -175,7 +174,7 @@ Whakapā mai: pillai.nz.contact@gmail.com
     },
     "Samoan": {
         "prompt": "Fesili i se fesili e uiga i fualaau:",
-        "placeholder": "💡 Fesili i auga o le fualaau, auala e fa'aaoga ai, po'o le fa'afefiloi — fa'ata'ita'iga: <i>E mafai ona ou inuina le ibuprofen ma le Panadol i le taimi e tasi?</i>",
+        "placeholder": "💡 Fa'ata'ita'iga: E mafai ona ou inuina le ibuprofen ma le Panadol?",
         "send": "Auina atu",
         "thinking": "O mafaufau...",
         "tagline": "Fesoasoani i tagata Niu Sila ia malamalama i a latou fualaau e ala i fa'amatalaga fa'atuatuaina mai le Medsafe.",
@@ -208,7 +207,7 @@ Imeli: pillai.nz.contact@gmail.com
     },
     "Mandarin": {
         "prompt": "请提出一个与药物有关的问题：",
-        "placeholder": "💡 请尝试提问副作用、用途或药物组合 — 例如：<i>布洛芬和扑热息痛可以一起吃吗？</i>",
+        "placeholder": "💡 例如：布洛芬和扑热息痛可以一起吃吗？",
         "send": "发送",
         "thinking": "思考中...",
         "tagline": "通过 Medsafe 的可靠信息帮助新西兰人了解他们的药物。",
@@ -240,7 +239,6 @@ Imeli: pillai.nz.contact@gmail.com
 *Pill-AI 并不能替代专业医疗建议。*"""
     }
 }
-
 
 
 # Get selected labels
