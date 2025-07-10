@@ -68,7 +68,7 @@ if os.path.exists("pillai_logo.png"):
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
 # Language select
-language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Spanish", "Mandarin", "Hindi"])
+language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
 
 # Labels
 labels = {
@@ -156,12 +156,11 @@ if send_clicked:
                     cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
 
                     lang_codes = {
-                        "Te Reo Māori": "mi",
-                        "Samoan": "sm",
-                        "Spanish": "es",
-                        "Mandarin": "zh-CN",
-                        "Hindi": "hi"
-                    }
+    "Te Reo Māori": "mi",
+    "Samoan": "sm",
+    "Mandarin": "zh-CN"
+}
+
                     if language in lang_codes:
                         translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
                         st.success(translated)
