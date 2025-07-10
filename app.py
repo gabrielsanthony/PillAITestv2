@@ -270,22 +270,23 @@ user_question = st.text_input(
 # Add space
 st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
 
-# Larger, centered checkbox
+# Larger, fully centered checkbox using container
 col_center = st.columns([1, 2, 1])
 with col_center[1]:
-    st.markdown("""
-        <style>
-        label[data-testid="stCheckbox"] {
-            font-size: 1.15em;
-            font-weight: 500;
-        }
-        label[data-testid="stCheckbox"] > div {
-            justify-content: center;
-            align-items: center;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-    explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
+    with st.container():
+        st.markdown("""
+            <style>
+            div[data-testid="stHorizontalBlock"] {
+                display: flex;
+                justify-content: center;
+            }
+            label[data-testid="stCheckbox"] {
+                font-size: 1.2em;
+                font-weight: 500;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+        explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
 
 
 # Treat any non-empty question as a trigger (ENTER pressed)
