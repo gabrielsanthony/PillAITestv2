@@ -17,7 +17,7 @@ except Exception as e:
 # Page config
 st.set_page_config(page_title="Pill-AI 2.0", page_icon="💊", layout="centered")
 
-# Custom CSS (Orange + Teal theme)
+# Custom CSS
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+SC&display=swap" rel="stylesheet">
     <style>
@@ -25,97 +25,54 @@ st.markdown("""
         background: linear-gradient(to bottom right, #f4f6f9, #e0f7fa);
         font-family: 'Segoe UI', sans-serif;
     }
-
     html[lang='zh'] body { font-family: 'Noto Sans SC', sans-serif !important; }
-
     .stTextInput input {
-        background-color: #ffffff !important;
+        background-color: #eeeeee !important;
         color: #000000 !important;
-        font-size: 1.1em !important;
-        padding: 10px 14px !important;
-        border: 2px solid #009688 !important;
-        border-radius: 8px !important;
+        font-size: 1.2em !important;
+        padding: 10px !important;
+        border: 2px solid black !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
     }
-
-    .stTextInput input:focus {
-        border: 2px solid #FF6F00 !important;
-        outline: none !important;
-    }
-
+    div:empty { display: none !important; }
+    .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
     .stButton button {
-        background-color: #FF6F00 !important;
-        color: white !important;
-        font-size: 1.05em;
+        background-color: #3b82f6;
+        color: white;
+        font-size: 1.1em;
         padding: 0.5em 1.2em;
         border-radius: 8px;
-        border: none;
-        transition: background-color 0.3s ease;
+        margin-top: 14px !important;
     }
-
-    .stButton button:hover {
-        background-color: #F4511E !important;
-    }
-
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
-
+    .stButton button:hover { background-color: #2563eb; }
+    .block-container { padding-top: 2rem; padding-bottom: 2rem; }
     .section {
-        background-color: white;
+        background-color: #ffffff;
         padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0, 150, 136, 0.1);
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         margin-bottom: 2rem;
     }
-
-    .banner {
-        background-color: #E0F2F1;
-        color: #00796B;
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 16px;
-        font-weight: 500;
-        font-size: 1em;
-    }
-
-    .tip {
-        background-color: #FFF3E0;
-        color: #EF6C00;
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 16px;
-        font-size: 0.95em;
-        font-style: italic;
-    }
-
-    .stSelectbox > div {
-        border: 2px solid #009688 !important;
-        border-radius: 8px !important;
-        padding: 6px;
-    }
-
-    .stSelectbox div[data-baseweb="select"] > div {
-        border: none !important;
-    }
-
-    div:empty { display: none !important; }
-
-    .disclaimer {
-        font-size: 0.9em;
-        color: grey;
-        text-align: center;
-        margin-top: 2rem;
-    }
-
-    img[src*="pillai_logo"] {
-        animation: float 3s ease-in-out infinite;
-    }
-
     @keyframes float {
         0% { transform: translateY(0px); }
         50% { transform: translateY(-6px); }
         100% { transform: translateY(0px); }
+    }
+    img[src*="pillai_logo"] {
+        animation: float 3s ease-in-out infinite;
+    }
+    .stSelectbox div[data-baseweb="select"] {
+        margin-top: 6px;
+        font-size: 1.05em;
+        padding: 6px;
+    }
+    .stSelectbox div[data-baseweb="select"] > div {
+        border: 1px solid #ccc !important;
+        border-radius: 6px !important;
+    }
+    .stSelectbox div[data-baseweb="select"]:hover {
+        border-color: #999 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -129,18 +86,167 @@ if os.path.exists("pillai_logo.png"):
     logo_base64 = get_base64_image("pillai_logo.png")
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
-# Language selector
+# Language select
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
 
-# Multilingual labels
-with open("labels.json", "r", encoding="utf-8") as f:
-    all_labels = json.load(f)
-L = all_labels.get(language, all_labels["English"])
 
-# Tagline banner
-st.markdown(f"<div class='banner'>💊 <strong>{L['tagline']}</strong></div>", unsafe_allow_html=True)
+# Labels
+labels = {
+    "English": {
+        "prompt": "Ask a medicine-related question:",
+        "placeholder": "Type your question here...",
+        "subtitle": "💡 Try asking about side effects, uses, or combinations — e.g. <i>Can I take ibuprofen and Panadol together?</i>",
+        "send": "Send",
+        "thinking": "Thinking...",
+        "tagline": "Helping Kiwis understand their medicines using trusted Medsafe info.",
+        "empty": "Please enter a question.",
+        "error": "The assistant failed to complete the request.",
+        "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP.",
+        "privacy_title": "🔐 Privacy Policy – Click to expand",
+        "privacy": """### 🛡️ Pill-AI Privacy Policy (Prototype Version)
 
-# API key setup
+Welcome to Pill-AI — your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
+
+**📌 What we collect**  
+– The questions you type into the chat box  
+
+**🔁 Who else is involved**  
+– OpenAI (for generating answers)  
+– Streamlit (to host the app)  
+– Google (for hosting and analytics)
+
+**👶 Users under 16**  
+We don’t ask for names, emails, or any personal information.
+
+**🗑️ Temporary data**  
+All data will be deleted after testing. This is a prototype.
+
+**📬 Questions?**  
+Contact us: pillai.nz.contact@gmail.com
+
+*Pill-AI is not a substitute for professional medical advice.*"""
+    },
+    "Te Reo Māori": {
+        "prompt": "Pātaihia tētahi pātai e pā ana ki te rongoā:",
+        "placeholder": "Tuhia tō pātai ki konei...",
+        "subtitle": "💡 Me pātai mō ngā pānga taha, ngā whakamahinga, rānei — hei tauira: <i>Ka pai rānei te tango i te ibuprofen me te Panadol i te wā kotahi?</i>",
+        "send": "Tukua",
+        "thinking": "E whakaaro ana...",
+        "tagline": "Āwhinatia ngā Kiwi kia mārama ki ā rātou rongoā mā ngā kōrero mai i a Medsafe.",
+        "empty": "Tēnā koa, tuhia he pātai.",
+        "error": "I rahua te kaiawhina ki te whakaoti i te tono.",
+        "disclaimer": "⚠️ Ehara a Pill-AI i te kaiārahi hauora tōtika. Me toro atu ki te rata, te kai rongoā rānei.",
+        "privacy_title": "🔐 Kaupapahere Tūmataiti – Pāwhiritia kia kite",
+        "privacy": """### 🛡️ Kaupapahere Tūmataiti o Pill-AI (Putanga Whakamātau)
+
+Nau mai ki a Pill-AI — tō kaiāwhina rongoā pono. He putanga whakamātau tēnei hei āwhina i te iwi kia mārama ki ā rātou rongoā mā ngā rauemi Medsafe.
+
+**📌 Ka kohia**  
+– Ngā pātai ka tuhia e koe  
+
+**🔁 Ko wai anō e uru ana**  
+– OpenAI (hei hanga whakautu)  
+– Streamlit (hei tuku i te pae tukutuku)  
+– Google (hei manaaki me te aromātai)
+
+**👶 Tamariki i raro i te 16**  
+Kāore mātou e tono mō ō ingoa, īmēra, rānei.
+
+**🗑️ Raraunga poto noa**  
+Ka mukua katoatia ngā raraunga i muri i te wā whakamātau. He putanga whakamātau tēnei.
+
+**📬 Pātai?**  
+Whakapā mai: pillai.nz.contact@gmail.com
+
+*Ehara a Pill-AI i te whakakapi mō ngā tohutohu hauora.*"""
+    },
+    "Samoan": {
+        "prompt": "Fesili i se fesili e uiga i fualaau:",
+        "placeholder": "Tusi i lau fesili iinei...",
+        "subtitle": "💡 Fesili i auga o le fualaau, auala e fa'aaoga ai, po'o le fa'afefiloi — fa'ata'ita'iga: <i>E mafai ona ou inuina le ibuprofen ma le Panadol i le taimi e tasi?</i>",
+        "send": "Auina atu",
+        "thinking": "O mafaufau...",
+        "tagline": "Fesoasoani i tagata Niu Sila ia malamalama i a latou fualaau e ala i fa'amatalaga fa'atuatuaina mai le Medsafe.",
+        "empty": "Fa'amolemole tusia se fesili.",
+        "error": "Le mafai e le fesoasoani ona tali atu.",
+        "disclaimer": "⚠️ E le suitulaga Pill-AI i se foma'i moni. Fa'amolemole fa'afeso'ota'i se foma'i po'o se fomai fai fualaau.",
+        "privacy_title": "🔐 Faiga Fa'alilolilo – Kiliki e faitau",
+        "privacy": """### 🛡️ Faiga Fa'alilolilo a Pill-AI (Fa'ata'ita'iga)
+
+Afio mai i Pill-AI — lau fesoasoani i fualaau. O se fa'ata'ita'iga lenei e fesoasoani i tagata ia malamalama i fualaau e fa'aaogaina ai fa'amatalaga mai Medsafe.
+
+**📌 Mea matou te pueina**  
+– Fesili e te tusia i le pusa fesili  
+
+**🔁 O ai e fesoasoani**  
+– OpenAI (mo tali atamai)  
+– Streamlit (mo le upega tafa'ilagi)  
+– Google (mo le talimalo ma le iloiloga)
+
+**👶 I lalo o le 16 tausaga**  
+Matou te le aoina ni igoa, imeli, po'o fa'amatalaga patino.
+
+**🗑️ Fa'amatalaga le tumau**  
+O fa'amatalaga uma o le a tapea pe a uma le vaitaimi o le fa'ata'ita'iga.
+
+**📬 Fesili?**  
+Imeli: pillai.nz.contact@gmail.com
+
+*Pill-AI e le suitulaga i fautuaga fa'apolofesa tau soifua mālōlōina.*"""
+    },
+    "Mandarin": {
+        "prompt": "请提出一个与药物有关的问题：",
+        "placeholder": "在此输入您的问题...",
+        "subtitle": "💡 请尝试提问副作用、用途或药物组合 — 例如：<i>布洛芬和扑热息痛可以一起吃吗？</i>",
+        "send": "发送",
+        "thinking": "思考中...",
+        "tagline": "通过 Medsafe 的可靠信息帮助新西兰人了解他们的药物。",
+        "empty": "请输入一个问题。",
+        "error": "助手未能完成请求。",
+        "disclaimer": "⚠️ Pill-AI 不能替代专业医疗建议。请咨询医生或药剂师。",
+        "privacy_title": "🔐 隐私政策 – 点击展开",
+        "privacy": """### 🛡️ Pill-AI 隐私政策（测试版）
+
+欢迎使用 Pill-AI —— 您值得信赖的用药助手。本工具为测试版本，帮助用户通过 Medsafe 学习药品信息。
+
+**📌 我们收集的信息**  
+– 您在对话框中输入的问题  
+
+**🔁 涉及的平台**  
+– OpenAI（用于生成回答）  
+– Streamlit（用于网站托管）  
+– Google（托管和分析）
+
+**👶 16岁以下用户**  
+我们不会索取您的姓名、电邮或其他个人信息。
+
+**🗑️ 数据处理**  
+这是一个测试版本。所有数据将在测试结束后删除。
+
+**📬 联系方式**  
+邮箱：pillai.nz.contact@gmail.com
+
+*Pill-AI 并不能替代专业医疗建议。*"""
+    }
+}
+
+L = labels.get(language, labels["English"])
+
+st.markdown(f"""
+    <div style='
+        background: #e0f7fa;
+        border-left: 6px solid #00acc1;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 1em;
+        margin-bottom: 1.2rem;
+        color: #006064;
+    '>
+        💊 <strong>{L["tagline"]}</strong>
+    </div>
+""", unsafe_allow_html=True)
+
+# API key
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
     st.error("OpenAI API key is not configured.")
@@ -153,19 +259,30 @@ if "thread_id" not in st.session_state:
 
 lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 
-# Main section
+# UI
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
-st.markdown(f"<div class='tip'>{L['subtitle']}</div>", unsafe_allow_html=True)
+st.markdown(f"""
+<div style='
+    background-color: #e0f7f7;
+    padding: 8px 12px;
+    border-left: 4px solid #008080;
+    border-radius: 6px;
+    font-size: 0.95em;
+    color: #004d4d;
+    margin-bottom: 10px;
+'>
+{L['subtitle']}
+</div>
+""", unsafe_allow_html=True)
 
-# Input + Button
+
 col1, col2 = st.columns([4, 1])
 with col1:
     user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
 with col2:
     send_clicked = st.button(L["send"])
 
-# Chat handling
 if send_clicked:
     if not user_question.strip():
         st.warning(L["empty"])
@@ -205,8 +322,12 @@ if send_clicked:
 st.markdown("</div>", unsafe_allow_html=True)
 
 # Disclaimer
-st.markdown(f"<div class='disclaimer'>{L['disclaimer']}</div>", unsafe_allow_html=True)
+st.markdown(f"""
+<div style='text-align: center; color: grey; font-size: 0.9em; margin-top: 40px;'>
+{L["disclaimer"]}
+</div>
+""", unsafe_allow_html=True)
 
-# Privacy Policy
+# Privacy
 with st.expander(L["privacy_title"]):
     st.markdown(L["privacy"])
