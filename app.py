@@ -73,26 +73,6 @@ st.markdown("""
     }
     .stSelectbox div[data-baseweb="select"]:hover {
         border-color: #999 !important;
-/* Make toggle button pill-shaped and similar to send button */
-div[data-testid="stToggle"] {
-    margin-top: 16px;
-    padding: 0px;
-}
-div[data-testid="stToggle"] label {
-    background-color: #eeeeee;
-    color: #000;
-    border: 2px solid #ccc;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.9em;
-    cursor: pointer;
-    transition: 0.3s;
-}
-div[data-testid="stToggle"] input:checked + div > label {
-    background-color: #f97316;
-    color: white;
-    border-color: #f97316;
-}
     }
     </style>
 """, unsafe_allow_html=True)
@@ -296,15 +276,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-col1, col2, col3 = st.columns([3, 1.2, 1])
-with col1:
-    user_question = st.text_input(label="", placeholder=L["placeholder"], key="user_input")
-with col2:
-    explain_like_12 = st.toggle("🧠 Simplify", value=False, key="simplify_toggle")
-with col3:
-    send_clicked = st.button(L["send"])
-
-
+explain_like_12 = st.checkbox("Explain in simple language", value=False)
 col1, col2 = st.columns([4, 1])
 with col1:
     user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
