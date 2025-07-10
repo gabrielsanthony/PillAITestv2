@@ -37,7 +37,7 @@ st.markdown("""
     }
     div:empty { display: none !important; }
     .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
-    ..stButton button {
+    .stButton button {
     background-color: #0097a7 !important;  /* Teal */
     color: white !important;
     font-size: 1.1em !important;
