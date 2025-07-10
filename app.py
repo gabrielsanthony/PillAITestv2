@@ -15,7 +15,7 @@ except Exception as e:
     st.warning(f"Could not load Medsafe links: {e}")
 
 # Page config
-st.set_page_config(page_title="Pill-AIv2", page_icon="💊", layout="centered")
+st.set_page_config(page_title="Pill-AI 2.0", page_icon="💊", layout="centered")
 
 # Custom CSS
 st.markdown("""
@@ -62,6 +62,11 @@ def get_base64_image(path):
 if os.path.exists("pillai_logo.png"):
     logo_base64 = get_base64_image("pillai_logo.png")
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style='text-align: center; font-size: 1.1em; margin-bottom: 1rem; color: #333;'>
+        💊 <i>Helping New Zealanders understand their medicines using trusted Medsafe info.</i>
+    </div>
+""", unsafe_allow_html=True)
 
 # Language select
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
