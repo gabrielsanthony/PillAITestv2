@@ -270,10 +270,13 @@ user_question = st.text_input(
 # Add space
 st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
 
-# Centered checkbox
 col_center = st.columns([1, 2, 1])
 with col_center[1]:
     explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
+    st.markdown(
+        "<style>label[data-testid='stCheckbox'] div{{ justify-content: center; }}</style>",
+        unsafe_allow_html=True
+    )
 
 
 # Treat any non-empty question as a trigger (ENTER pressed)
