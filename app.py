@@ -23,7 +23,6 @@ st.markdown("""
     <style>
     body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
     html[lang='zh'] body { font-family: 'Noto Sans SC', sans-serif !important; }
-    html[lang='hi'] body { font-family: 'Noto Sans Devanagari', sans-serif !important; }
     .stTextInput input {
         background-color: #eeeeee !important;
         color: #000000 !important;
@@ -33,9 +32,7 @@ st.markdown("""
         border-radius: 6px !important;
         box-shadow: none !important;
     }
-    div:empty {
-    display: none !important;
-}
+    div:empty { display: none !important; }
     .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
     .stButton button {
         background-color: #3b82f6;
@@ -58,7 +55,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Logo
-
 def get_base64_image(path):
     with open(path, "rb") as img_file:
         return f"data:image/png;base64,{base64.b64encode(img_file.read()).decode()}"
@@ -70,7 +66,7 @@ if os.path.exists("pillai_logo.png"):
 # Language select
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
 
-# Labels
+# Labels (multilingual UI)
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
@@ -79,9 +75,137 @@ labels = {
         "thinking": "Thinking...",
         "empty": "Please enter a question.",
         "error": "The assistant failed to complete the request.",
-        "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP."
+        "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP.",
+        "privacy_title": "🔐 Privacy Policy – Click to expand",
+        "privacy": """
+### 🛡️ Pill-AI Privacy Policy (Prototype Version)
+
+Welcome to Pill-AI — your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
+
+**📌 What we collect**  
+– The questions you type into the chat box  
+
+**🔁 Who else is involved**  
+– OpenAI (for generating answers)  
+– Streamlit (to host the app)  
+– Google (hosting/analytics)
+
+**👶 Users under 16**  
+No names, emails or personal details are asked.  
+
+**🗑️ Temporary data**  
+This is a prototype. All data will be deleted after testing.  
+
+**📬 Questions?**  
+Contact us: pillai.nz.contact@gmail.com
+
+*Pill-AI is not a substitute for professional medical advice.*
+"""
+    },
+    "Te Reo Māori": {
+        "prompt": "Pātaihia tētahi pātai e pā ana ki te rongoā:",
+        "placeholder": "Tuhia tō pātai ki konei...",
+        "send": "Tukua",
+        "thinking": "E whakaaro ana...",
+        "empty": "Tēnā koa, tuhia he pātai.",
+        "error": "I rahua te kaiawhina ki te whakaoti i te tono.",
+        "disclaimer": "⚠️ Ehara a Pill-AI i te kaiārahi hauora tōtika. Me toro atu ki te rata, te kai rongoā rānei.",
+        "privacy_title": "🔐 Kaupapahere Tūmataiti – Pāwhiritia kia kite",
+        "privacy": """
+### 🛡️ Kaupapahere Tūmataiti o Pill-AI (Putanga Whakamātau)
+
+Nau mai ki a Pill-AI — tō kaiāwhina rongoā pono. He putanga whakamātau tēnei hei āwhina i te iwi kia mārama ki ā rātou rongoā mā ngā rauemi Medsafe.
+
+**📌 Ka kohia**  
+– Ngā pātai e patopato ai koe  
+
+**🔁 Ko wai anō e uru ana**  
+– OpenAI (hei waihanga whakautu)  
+– Streamlit  
+– Google (hei whakahaere, aromatawai hoki)
+
+**👶 Tamariki i raro i te 16**  
+Kāore mātou e kohi i ngā ingoa, īmēra, aha atu rānei.
+
+**🗑️ Raraunga poto noa**  
+Ka mukua ngā raraunga i muri i te wā whakamātau.
+
+**📬 Pātai?**  
+Whakapā mai: pillai.nz.contact@gmail.com
+
+*Ehara a Pill-AI i te kaiāwhina rongoā tōtika.*
+"""
+    },
+    "Samoan": {
+        "prompt": "Fesili i se fesili e uiga i fualaau:",
+        "placeholder": "Tusi i lau fesili iinei...",
+        "send": "Auina atu",
+        "thinking": "O mafaufau...",
+        "empty": "Fa'amolemole tusia se fesili.",
+        "error": "Le mafai e le fesoasoani ona tali atu.",
+        "disclaimer": "⚠️ E le suitulaga Pill-AI i se foma'i moni. Fa'amolemole fa'afeso'ota'i se foma'i po'o se fomai fai fualaau.",
+        "privacy_title": "🔐 Faiga Fa'alilolilo – Kiliki e faitau",
+        "privacy": """
+### 🛡️ Faiga Fa'alilolilo a Pill-AI (Fa'ata'ita'iga)
+
+Afio mai i Pill-AI — lau fesoasoani i fualaau. O se fa'ata'ita'iga lenei e fesoasoani i tagata ia malamalama i fualaau e fa'aaogaina ai fa'amatalaga mai Medsafe.
+
+**📌 Mea matou te pueina**  
+– Fesili e te tusia  
+
+**🔁 O ai e fesoasoani**  
+– OpenAI  
+– Streamlit  
+– Google  
+
+**👶 I lalo o le 16 tausaga**  
+Matou te le aoina ni igoa po'o ni fa'amatalaga patino.
+
+**🗑️ Fa'amatalaga le tumau**  
+O le fa'ata'ita'iga lenei. O le a tapea uma a matou fa'amaumauga.
+
+**📬 Fesili?**  
+Fa'afeso'ota'i mai: pillai.nz.contact@gmail.com
+
+*E le suitulaga Pill-AI i se foma'i moni.*
+"""
+    },
+    "Mandarin": {
+        "prompt": "请提出一个与药物有关的问题：",
+        "placeholder": "在此输入您的问题...",
+        "send": "发送",
+        "thinking": "思考中...",
+        "empty": "请输入一个问题。",
+        "error": "助手未能完成请求。",
+        "disclaimer": "⚠️ Pill-AI 不能替代专业医疗建议。请咨询医生或药剂师。",
+        "privacy_title": "🔐 隐私政策 – 点击展开",
+        "privacy": """
+### 🛡️ Pill-AI 隐私政策（测试版）
+
+欢迎使用 Pill-AI — 您值得信赖的用药助手。本工具为测试版本，帮助用户通过 Medsafe 学习药品信息。
+
+**📌 我们收集**  
+– 您输入的问题  
+
+**🔁 相关平台**  
+– OpenAI  
+– Streamlit  
+– Google  
+
+**👶 16 岁以下用户**  
+我们不收集姓名、电邮或个人信息。
+
+**🗑️ 数据临时保存**  
+测试结束后将删除所有数据。
+
+**📬 问题联系**  
+邮箱：pillai.nz.contact@gmail.com
+
+*Pill-AI 不能替代专业医疗建议。*
+"""
     }
 }
+
 L = labels.get(language, labels["English"])
 
 # OpenAI setup
@@ -96,26 +220,12 @@ ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 if "thread_id" not in st.session_state:
     st.session_state["thread_id"] = client.beta.threads.create().id
 
-# Stricter Medsafe link matcher based on drug name appearance only
-def find_medsafe_links(answer_text, top_n=5):
-    answer = answer_text.lower()
-    answer_keywords = set(re.findall(r"\b[a-zA-Z0-9]+\b", answer))
-    matches = []
-
-    for key, url in medsafe_links.items():
-        key_clean = key.lower().replace("source_", "").replace("_", " ").replace(",", "")
-        key_tokens = set(re.findall(r"\b[a-zA-Z0-9]+\b", key_clean))
-
-        # Only count matches with exact token overlap (excluding common terms)
-        core_matches = answer_keywords & key_tokens
-        if len(core_matches) == 0:
-            continue
-
-        score = len(core_matches) / len(key_tokens)
-        matches.append((score, key_clean, url))
-
-    matches.sort(reverse=True)
-    return matches[:top_n]
+# Lang code map
+lang_codes = {
+    "Te Reo Māori": "mi",
+    "Samoan": "sm",
+    "Mandarin": "zh-CN"
+}
 
 # UI
 st.markdown("<div class='section'>", unsafe_allow_html=True)
@@ -155,12 +265,6 @@ if send_clicked:
                     raw_answer = latest.content[0].text.value
                     cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
 
-                    lang_codes = {
-    "Te Reo Māori": "mi",
-    "Samoan": "sm",
-    "Mandarin": "zh-CN"
-}
-
                     if language in lang_codes:
                         translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
                         st.success(translated)
@@ -176,7 +280,6 @@ if send_clicked:
                     else:
                         st.markdown("""
                         🔍 No direct Medsafe PDF found for this topic.  
-                        You can manually search Medsafe Consumer Info here:  
                         👉 [Medsafe CMI Search](https://www.medsafe.govt.nz/Consumers/CMI/CMI.asp)
                         """, unsafe_allow_html=True)
                 else:
@@ -193,35 +296,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# 🔐 Privacy Policy
-with st.expander("🔐 Privacy Policy – Click to expand"):
-    st.markdown("""
-    ### 🛡️ Pill-AI Privacy Policy (Prototype Version)
-
-    Welcome to Pill-AI — your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
-
-    **📌 What we collect**  
-    When you use Pill-AI, we store:  
-    – The questions you type into the chat box  
-    This helps us understand how people are using the tool and improve it during testing.
-
-    **🔁 Who else is involved**  
-    Pill-AI uses services from:  
-    – OpenAI (for generating answers)  
-    – Streamlit (to host the app)  
-    – Google (possibly for hosting, analytics, or error logging)  
-    These platforms may collect some technical data like your device type or browser, but not your name.
-
-    **👶 Users under 16**  
-    Pill-AI can be used by people under 16. We don’t ask for names, emails, or personal details — just medicine-related questions.  
-    If you're under 16, please ask a parent or guardian before using Pill-AI.
-
-    **🗑️ Data won’t be kept forever**  
-    This is just a prototype. All stored data (like your questions) will be deleted once the testing is over.  
-    No long-term tracking, no selling of data.
-
-    **📬 Questions?**  
-    Contact us at: pillai.nz.contact@gmail.com
-
-    *Pill-AI is not a substitute for professional medical advice. Always check with a doctor or pharmacist if you're unsure.*
-    """)
+# Privacy Policy
+with st.expander(L["privacy_title"]):
+    st.markdown(L["privacy"])
