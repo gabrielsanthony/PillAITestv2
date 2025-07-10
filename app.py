@@ -276,7 +276,10 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown("<div style='margin-top: 10px;'>", unsafe_allow_html=True)
 explain_like_12 = st.checkbox("Explain in simple language", value=False)
+st.markdown("</div>", unsafe_allow_html=True)
+
 col1, col2 = st.columns([4, 1])
 with col1:
     user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
