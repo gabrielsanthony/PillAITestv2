@@ -37,14 +37,18 @@ st.markdown("""
     }
     div:empty { display: none !important; }
     .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
-    .stButton button {
-        background-color: #3b82f6;
-        color: white;
-        font-size: 1.1em;
-        padding: 0.5em 1.2em;
-        border-radius: 8px;
-        margin-top: 14px !important;
-    }
+   .stButton button {
+    background-color: #3b82f6;
+    color: white;
+    font-size: 1.1em;
+    padding: 10px 16px;
+    height: 48px;
+    border-radius: 8px;
+    margin-top: 0px !important;
+    line-height: 1em;
+    vertical-align: middle;
+}
+
     .stButton button:hover { background-color: #2563eb; }
     .block-container { padding-top: 2rem; padding-bottom: 2rem; }
     .section {
