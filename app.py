@@ -38,19 +38,14 @@ st.markdown("""
     div:empty { display: none !important; }
     .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
     .stButton button {
-        background-color: #008080 !important; /* teal */
-        color: white !important;
+        background-color: #3b82f6;
+        color: white;
         font-size: 1.1em;
         padding: 0.5em 1.2em;
         border-radius: 8px;
         margin-top: 14px !important;
-        border: none;
-}
-
-    .stButton button:hover {
-        background-color: #006666 !important; /* darker teal */
-}
-
+    }
+    .stButton button:hover { background-color: #2563eb; }
     .block-container { padding-top: 2rem; padding-bottom: 2rem; }
     .section {
         background-color: #ffffff;
@@ -239,18 +234,18 @@ L = labels.get(language, labels["English"])
 
 st.markdown(f"""
     <div style='
-        background: #e0f7fa;
-        border-left: 6px solid #00acc1;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-size: 1em;
-        margin-bottom: 1.2rem;
-        color: #006064;
+        text-align: center;
+        font-size: 1.1em;
+        background-color: #e6f4ff;
+        padding: 10px 20px;
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        border: 1px solid #cce4f7;
+        color: #333;
     '>
-        💊 <strong>{L["tagline"]}</strong>
+        💊 <i>{L["tagline"]}</i>
     </div>
 """, unsafe_allow_html=True)
-
 
 # API key
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
