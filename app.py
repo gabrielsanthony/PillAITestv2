@@ -291,7 +291,7 @@ if send_clicked:
             try:
                 adjusted_question = user_question
                 if explain_like_12:
-                    adjusted_question += " Please explain this in simple language suitable for a 12-year-old."
+                    adjusted_question += " Please explain this in simple language suitable for a 12-year-old (MY AGE ISN'T 12 THOUGH)."
         
                 client.beta.threads.messages.create(
                     thread_id=st.session_state["thread_id"],
