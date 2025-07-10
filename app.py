@@ -82,7 +82,7 @@ labels = {
         "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP."
     }
 }
-L = labels[language]
+L = labels.get(language, labels["English"])
 
 # OpenAI setup
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
