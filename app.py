@@ -54,6 +54,15 @@ st.markdown("""
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         margin-bottom: 2rem;
     }
+    @keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+img[src*="pillai_logo"] {
+  animation: float 3s ease-in-out infinite;
+}
+
     </style>
 """, unsafe_allow_html=True)
 
