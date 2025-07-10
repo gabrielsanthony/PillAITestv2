@@ -312,20 +312,20 @@ if send_clicked:
                     if run_status.status in ["completed", "failed"]:
                         break
 
-        if run_status.status == "completed":
-            messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"])
-            latest = messages.data[0]
-            raw_answer = latest.content[0].text.value
-            cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
-
-            if language in lang_codes:
-                translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
-                st.success(translated)
-            else:
-                st.success(cleaned)
-
-    except Exception as e:
-        st.error(f"Error: {str(e)}")
+                if run_status.status == "completed":
+                    messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"])
+                    latest = messages.data[0]
+                    raw_answer = latest.content[0].text.value
+                    cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
+        
+                    if language in lang_codes:
+                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
+                        st.success(translated)
+                    else:
+                        st.success(cleaned)
+        
+            except Exception as e:
+                st.error(f"Error: {str(e)}")
 
 
 st.markdown("</div>", unsafe_allow_html=True)
