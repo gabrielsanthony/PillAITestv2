@@ -76,7 +76,7 @@ st.markdown("""
         border: 1px solid #cce4f7;
         color: #333;
     '>
-        💊 <i>Helping New Zealanders understand their medicines using trusted Medsafe info.</i>
+        💊 <i>Helping Kiwis understand their medicines using trusted Medsafe info.</i>
     </div>
 """, unsafe_allow_html=True)
 
