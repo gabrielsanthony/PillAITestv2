@@ -259,11 +259,13 @@ st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 st.markdown("<div style='color: #777; font-size: 0.9em; margin-bottom: 10px;'>Try asking about side effects, uses, or combinations — e.g. <i>Can I take ibuprofen and Panadol together?</i></div>", unsafe_allow_html=True)
 
-col1, col2 = st.columns([4, 1])
+col1, col2 = st.columns([5, 1])
 with col1:
-    user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
+    user_question = st.text_input("", placeholder=L["placeholder"], key="question_input")
 with col2:
+    st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)  # pushes button down
     send_clicked = st.button(L["send"])
+
 
 if send_clicked:
     if not user_question.strip():
