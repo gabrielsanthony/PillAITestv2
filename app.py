@@ -234,16 +234,15 @@ L = labels.get(language, labels["English"])
 
 st.markdown(f"""
     <div style='
-        text-align: center;
-        font-size: 1.1em;
-        background-color: #e6f4ff;
-        padding: 10px 20px;
-        margin-bottom: 1rem;
-        border-radius: 10px;
-        border: 1px solid #cce4f7;
-        color: #333;
+        background: #e0f7fa;
+        border-left: 6px solid #00acc1;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 1em;
+        margin-bottom: 1.2rem;
+        color: #006064;
     '>
-        💊 <i>{L["tagline"]}</i>
+        💊 <strong>{L["tagline"]}</strong>
     </div>
 """, unsafe_allow_html=True)
 
