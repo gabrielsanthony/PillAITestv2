@@ -86,7 +86,7 @@ if os.path.exists("pillai_logo.png"):
     logo_base64 = get_base64_image("pillai_logo.png")
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(f"""
     <div style='
         text-align: center;
         font-size: 1.1em;
@@ -97,7 +97,7 @@ st.markdown("""
         border: 1px solid #cce4f7;
         color: #333;
     '>
-        💊 <i>Helping Kiwis understand their medicines using trusted Medsafe info.</i>
+        💊 <i>{L["tagline"]}</i>
     </div>
 """, unsafe_allow_html=True)
 
@@ -112,6 +112,7 @@ labels = {
         "subtitle": "💡 Try asking about side effects, uses, or combinations — e.g. <i>Can I take ibuprofen and Panadol together?</i>",
         "send": "Send",
         "thinking": "Thinking...",
+        "tagline": "Helping Kiwis understand their medicines using trusted Medsafe info.",
         "empty": "Please enter a question.",
         "error": "The assistant failed to complete the request.",
         "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP.",
@@ -145,6 +146,7 @@ Contact us: pillai.nz.contact@gmail.com
         "subtitle": "💡 Me pātai mō ngā pānga taha, ngā whakamahinga, rānei — hei tauira: <i>Ka pai rānei te tango i te ibuprofen me te Panadol i te wā kotahi?</i>",
         "send": "Tukua",
         "thinking": "E whakaaro ana...",
+        "tagline": "Āwhinatia ngā Kiwi kia mārama ki ā rātou rongoā mā ngā kōrero mai i a Medsafe.",
         "empty": "Tēnā koa, tuhia he pātai.",
         "error": "I rahua te kaiawhina ki te whakaoti i te tono.",
         "disclaimer": "⚠️ Ehara a Pill-AI i te kaiārahi hauora tōtika. Me toro atu ki te rata, te kai rongoā rānei.",
@@ -178,6 +180,7 @@ Whakapā mai: pillai.nz.contact@gmail.com
         "subtitle": "💡 Fesili i auga o le fualaau, auala e fa'aaoga ai, po'o le fa'afefiloi — fa'ata'ita'iga: <i>E mafai ona ou inuina le ibuprofen ma le Panadol i le taimi e tasi?</i>",
         "send": "Auina atu",
         "thinking": "O mafaufau...",
+        "tagline": "Fesoasoani i tagata Niu Sila ia malamalama i a latou fualaau e ala i fa'amatalaga fa'atuatuaina mai le Medsafe.",
         "empty": "Fa'amolemole tusia se fesili.",
         "error": "Le mafai e le fesoasoani ona tali atu.",
         "disclaimer": "⚠️ E le suitulaga Pill-AI i se foma'i moni. Fa'amolemole fa'afeso'ota'i se foma'i po'o se fomai fai fualaau.",
@@ -211,6 +214,7 @@ Imeli: pillai.nz.contact@gmail.com
         "subtitle": "💡 请尝试提问副作用、用途或药物组合 — 例如：<i>布洛芬和扑热息痛可以一起吃吗？</i>",
         "send": "发送",
         "thinking": "思考中...",
+        "tagline": "通过 Medsafe 的可靠信息帮助新西兰人了解他们的药物。",
         "empty": "请输入一个问题。",
         "error": "助手未能完成请求。",
         "disclaimer": "⚠️ Pill-AI 不能替代专业医疗建议。请咨询医生或药剂师。",
