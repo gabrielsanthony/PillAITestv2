@@ -257,7 +257,19 @@ lang_codes = {
 # UI
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
-st.markdown("<div style='color: #777; font-size: 0.9em; margin-bottom: 10px;'>Try asking about side effects, uses, or combinations — e.g. <i>Can I take ibuprofen and Panadol together?</i></div>", unsafe_allow_html=True)
+st.markdown("""
+<div style='
+    background-color: #f0f4f8;
+    padding: 8px 12px;
+    border-left: 4px solid #3b82f6;
+    border-radius: 6px;
+    font-size: 0.95em;
+    color: #333;
+    margin-bottom: 10px;
+'>
+💡 Try asking about side effects, uses, or combinations — e.g. <i>Can I take ibuprofen and Panadol together?</i>
+</div>
+""", unsafe_allow_html=True)
 
 col1, col2 = st.columns([4, 1])
 with col1:
