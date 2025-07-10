@@ -298,11 +298,12 @@ st.markdown(f"""
 
 col1, col2, col3 = st.columns([3, 1.2, 1])
 with col1:
-    user_question = st.text_input(label="", placeholder=L["placeholder"], key="question_input")
+    user_question = st.text_input(label="", placeholder=L["placeholder"], key="user_input")
 with col2:
-    explain_like_12 = st.toggle("🧠 Simplify", value=False)
+    explain_like_12 = st.toggle("🧠 Simplify", value=False, key="simplify_toggle")
 with col3:
     send_clicked = st.button(L["send"])
+
 
 col1, col2 = st.columns([4, 1])
 with col1:
