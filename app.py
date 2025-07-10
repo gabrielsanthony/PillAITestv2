@@ -86,9 +86,8 @@ if os.path.exists("pillai_logo.png"):
     logo_base64 = get_base64_image("pillai_logo.png")
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
-# Language select
+# Language select FIRST so we can show dynamic tagline
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
-
 
 # Labels
 labels = {
@@ -230,8 +229,10 @@ Imeli: pillai.nz.contact@gmail.com
     }
 }
 
+# Now we get the selected language’s labels
 L = labels.get(language, labels["English"])
 
+# Tagline – now shown AFTER language selection, but ABOVE everything else
 st.markdown(f"""
     <div style='
         background: #e0f7fa;
