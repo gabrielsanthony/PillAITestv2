@@ -108,7 +108,7 @@ language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Re
 labels = {
     "English": {
         "prompt": "Ask a medicine-related question:",
-        "placeholder": "💡 E.g. Can I take ibuprofen and Panadol together?",
+        "placeholder": "💡 E.g. Can I take ibuprofen and Panadol together? (enter to send)",
         "send": "Send",
         "thinking": "Thinking...",
         "tagline": "Helping Kiwis understand their medicines using trusted Medsafe info.",
