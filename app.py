@@ -111,7 +111,7 @@ labels = {
         "placeholder": "💡 Try asking, Can I take ibuprofen and Panadol together?",
         "send": "Send",
         "thinking": "Thinking...",
-        "tagline": "Helping Kiwis understand medicines with trusted Medsafe info.",
+        "tagline": "Helping Kiwis understand medicines, safely.",
         "empty": "Please enter a question.",
         "error": "The assistant failed to complete the request.",
         "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP.",
