@@ -107,7 +107,7 @@ language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Re
 
 labels = {
     "English": {
-        "prompt": "💬 Ask a medicine question:",
+        "prompt": "Ask a medicine question:",
         "placeholder": "💡 Try asking, Can I take ibuprofen and Panadol together?",
         "send": "Send",
         "thinking": "Thinking...",
