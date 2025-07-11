@@ -87,7 +87,7 @@ if os.path.exists("pillai_logo.png"):
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
 # Initial tagline (before language selection)
-fallback_tagline = "Helping Kiwis understand their medicines, safely."
+fallback_tagline = "Helping Kiwis understand their pills, safely."
 st.markdown(f"""
     <div style='
         background: #e0f7fa;
