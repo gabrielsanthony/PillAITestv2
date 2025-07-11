@@ -87,6 +87,22 @@ st.markdown("""
     .stButton > button:hover {
         background-color: #ffc00;
     }
+    .stButton > button {
+    width: 100% !important;
+    display: block;
+    font-size: 1.1em;
+    padding: 0.6em;
+    border-radius: 6px;
+    background-color: #3b82f6;
+    color: white;
+    margin-top: 10px;
+    border: none;
+}
+
+.stButton > button:hover {
+    background-color: #2563eb;
+}
+
     </style>
 """, unsafe_allow_html=True)
 
@@ -275,24 +291,20 @@ st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 
 with st.form(key="question_form"):
+    # Input field
     user_question = st.text_input(
         label="",
         placeholder=L["placeholder"],
         key="question_input"
     )
 
+    # Checkbox
     explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
 
-    # Make the button full width
-    st.markdown("""
-        <style>
-        .full-width-button > button {
-            width: 100% !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
-    submit = st.form_submit_button(label=L["send"], help="Click to send your question.", type="primary")
+    # Send button with full width
+    col1, col2, col3 = st.columns([0.01, 0.98, 0.01])
+    with col2:
+        submit = st.form_submit_button(label=L["send"])
 
 send_clicked = submit and user_question.strip()
 
