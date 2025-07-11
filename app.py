@@ -87,7 +87,7 @@ if os.path.exists("pillai_logo.png"):
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
 # Initial tagline (before language selection)
-fallback_tagline = "Helping Kiwis understand their pills, safely."
+fallback_tagline = " Helping Kiwis understand their pills, safely."
 st.markdown(f"""
     <div style='
         background: #e0f7fa;
@@ -108,7 +108,7 @@ language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Re
 labels = {
     "English": {
         "prompt": "Ask a medicine question:",
-        "placeholder": "💡 Try asking, Can I take ibuprofen and Panadol together?",
+        "placeholder": "💡 e.g: Can I take ibuprofen with Panadol?",
         "send": "Send",
         "thinking": "Thinking...",
         "tagline": "Helping Kiwis understand medicines, safely.",
