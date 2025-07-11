@@ -74,21 +74,19 @@ st.markdown("""
     .stSelectbox div[data-baseweb="select"]:hover {
         border-color: #999 !important;
     }
-    .stButton.send-button button {
-    width: 100% !important;
-    display: block;
-    font-size: 1.2em;
-    padding: 0.6em;
-    border-radius: 8px;
-    margin-top: 10px;
-}
-.stButton > button {
-    width: 100% !important;
-    font-size: 1.2em;
-    padding: 0.6em;
-    border-radius: 8px;
-    margin-top: 10px;
-}
+    .stButton > button {
+        width: 100% !important;
+        font-size: 1.1em;
+        padding: 0.6em;
+        border-radius: 6px;
+        margin-top: 10px;
+        background-color: #3b82f6;
+        color: white;
+    }
+    
+    .stButton > button:hover {
+        background-color: #2563eb;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -285,9 +283,19 @@ with st.form(key="question_form"):
 
     explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
 
-    submit = st.form_submit_button(label=L["send"])
+    # Make the button full width
+    st.markdown("""
+        <style>
+        .full-width-button > button {
+            width: 100% !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    submit = st.form_submit_button(label=L["send"], help="Click to send your question.", type="primary")
 
 send_clicked = submit and user_question.strip()
+
 
 if send_clicked:
     st.session_state["question_submitted"] = user_question
