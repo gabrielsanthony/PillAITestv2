@@ -107,11 +107,11 @@ language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Re
 
 labels = {
     "English": {
-        "prompt": "Ask a medicine-related question:",
+        "prompt": "💬 Ask a medicine question:",
         "placeholder": "💡 Try asking, Can I take ibuprofen and Panadol together?",
         "send": "Send",
         "thinking": "Thinking...",
-        "tagline": "Helping Kiwis understand their medicines using trusted Medsafe info.",
+        "tagline": "Helping Kiwis understand medicines with trusted Medsafe info.",
         "empty": "Please enter a question.",
         "error": "The assistant failed to complete the request.",
         "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP.",
