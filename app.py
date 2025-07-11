@@ -74,6 +74,21 @@ st.markdown("""
     .stSelectbox div[data-baseweb="select"]:hover {
         border-color: #999 !important;
     }
+    .stButton.send-button button {
+    width: 100% !important;
+    display: block;
+    font-size: 1.2em;
+    padding: 0.6em;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+.stButton > button {
+    width: 100% !important;
+    font-size: 1.2em;
+    padding: 0.6em;
+    border-radius: 8px;
+    margin-top: 10px;
+}
     </style>
 """, unsafe_allow_html=True)
 
@@ -261,36 +276,19 @@ lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 
-user_question = st.text_input(
-    label="",
-    placeholder=L["placeholder"],
-    key="question_input"
-)
+with st.form(key="question_form"):
+    user_question = st.text_input(
+        label="",
+        placeholder=L["placeholder"],
+        key="question_input"
+    )
 
-# Add space
-st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
+    explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
 
-# Larger, fully centered checkbox using container
-col_center = st.columns([1, 2, 1])
-with col_center[1]:
-    with st.container():
-        st.markdown("""
-            <style>
-            div[data-testid="stHorizontalBlock"] {
-                display: flex;
-                justify-content: center;
-            }
-            label[data-testid="stCheckbox"] {
-                font-size: 1.2em;
-                font-weight: 500;
-            }
-            </style>
-        """, unsafe_allow_html=True)
-        explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
+    submit = st.form_submit_button(label=L["send"])
 
+send_clicked = submit and user_question.strip()
 
-# Treat any non-empty question as a trigger (ENTER pressed)
-send_clicked = user_question.strip() != "" and st.session_state.get("question_submitted") != user_question
 if send_clicked:
     st.session_state["question_submitted"] = user_question
 
