@@ -41,11 +41,15 @@ st.markdown("""
         background-color: #3b82f6;
         color: white;
         font-size: 1.1em;
-        padding: 0.5em 1.2em;
+        padding: 0.6em 1em;
         border-radius: 8px;
-        margin-top: 14px !important;
+        margin-top: 4px;
+        width: 100%;
     }
-    .stButton button:hover { background-color: #2563eb; }
+    .stButton button:hover {
+        background-color: #2563eb;
+    }
+
     .block-container { padding-top: 2rem; padding-bottom: 2rem; }
     .section {
         background-color: #ffffff;
@@ -74,6 +78,15 @@ st.markdown("""
     .stSelectbox div[data-baseweb="select"]:hover {
         border-color: #999 !important;
     }
+    @media (max-width: 768px) {
+    .stTextInput input {
+        font-size: 1em !important;
+    }
+    .stButton button {
+        font-size: 1em !important;
+        padding: 0.6em !important;
+    }
+}
     </style>
 """, unsafe_allow_html=True)
 
@@ -267,6 +280,22 @@ user_question = st.text_input(
     key="question_input"
 )
 
+# Wrap input and button in columns for mobile alignment
+col1, col2 = st.columns([4, 1])
+with col1:
+    user_question = st.text_input(
+        label="",
+        placeholder=L["placeholder"],
+        key="question_input"
+    )
+
+with col2:
+    send_button = st.button(L["send"], use_container_width=True)
+
+# Override send_clicked to work with button
+send_clicked = send_button and user_question.strip() != ""
+
+
 # Add space
 st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
 
@@ -290,7 +319,7 @@ with col_center[1]:
 
 
 # Treat any non-empty question as a trigger (ENTER pressed)
-send_clicked = user_question.strip() != "" and st.session_state.get("question_submitted") != user_question
+# send_clicked = user_question.strip() != "" and st.session_state.get("question_submitted") != user_question
 if send_clicked:
     st.session_state["question_submitted"] = user_question
 
