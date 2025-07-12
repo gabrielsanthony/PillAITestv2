@@ -273,12 +273,6 @@ lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.write(f"### 💬 {L['prompt']}")
 
-user_question = st.text_input(
-    label="",
-    placeholder=L["placeholder"],
-    key="question_input"
-)
-
 # Wrap input and button in columns for mobile alignment
 col1, col2 = st.columns([4, 1])
 with col1:
