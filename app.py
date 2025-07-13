@@ -311,6 +311,31 @@ with col2:
     send_button = st.button(L["send"], use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
+# Add space below input + button
+st.markdown("<div style='margin-top: 12px;'></div>", unsafe_allow_html=True)
+
+# Centered toggles for simplify + memory
+col_center = st.columns([1, 2, 1])
+with col_center[1]:
+    with st.container():
+        st.markdown("""
+            <style>
+            div[data-testid="stHorizontalBlock"] {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+                margin-top: 0.2rem;
+            }
+            label[data-testid="stToggle"] {
+                font-size: 1.05em;
+                font-weight: 500;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+        explain_like_12 = st.toggle("🧠 Simplify the answer", value=True)
+        use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False)
+
 # Override send_clicked to work with button
 send_clicked = send_button and user_question.strip() != ""
 
