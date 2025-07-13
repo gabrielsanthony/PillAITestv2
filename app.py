@@ -119,20 +119,20 @@ if os.path.exists("pillai_logo.png"):
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
 # Initial tagline (before language selection)
-fallback_tagline = " Helping Kiwis understand their pills, safely."
-st.markdown(f"""
-    <div style='
-        background: #e0f7fa;
-        border-left: 6px solid #00acc1;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-size: 1em;
-        margin-bottom: 1.2rem;
-        color: #006064;
-    '>
-        💊 <strong>{fallback_tagline}</strong>
-    </div>
-""", unsafe_allow_html=True)
+#fallback_tagline = " Helping Kiwis understand their pills, safely."
+#st.markdown(f"""
+#    <div style='
+#        background: #e0f7fa;
+#        border-left: 6px solid #00acc1;
+#        padding: 10px 16px;
+#        border-radius: 8px;
+#        font-size: 1em;
+#        margin-bottom: 1.2rem;
+#        color: #006064;
+#    '>
+#        💊 <strong>{fallback_tagline}</strong>
+#    </div>
+#""", unsafe_allow_html=True)
 
 # Language selector
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
