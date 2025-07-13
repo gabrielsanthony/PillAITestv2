@@ -288,7 +288,9 @@ with col1:
     )
 
 with col2:
+    st.markdown("<div style='margin-top: 32px;'>", unsafe_allow_html=True)
     send_button = st.button(L["send"], use_container_width=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # Override send_clicked to work with button
 send_clicked = send_button and user_question.strip() != ""
