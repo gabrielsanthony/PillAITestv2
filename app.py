@@ -93,15 +93,15 @@ st.markdown("""
     .stSelectbox div[data-baseweb="select"]:hover {
         border-color: #999 !important;
     }
-    @media (max-width: 768px) {
-    .stTextInput input {
-        font-size: 1em !important;
-    }
-    .stButton button {
-        font-size: 1em !important;
-        padding: 0.6em !important;
-    }
-     }
+   @media (max-width: 768px) {
+  .stTextInput input {
+      font-size: 1em !important;
+  }
+  .stButton button {
+      font-size: 1em !important;
+      padding: 0.6em !important;
+  }
+}  /* <-- This was missing */
     </style>
 """, unsafe_allow_html=True)
 
