@@ -4,7 +4,11 @@ import os
 import re
 import base64
 import json
+import time  # at the top of your file
 from deep_translator import GoogleTranslator
+
+max_wait = 15  # seconds
+elapsed = 0
 
 # Load Medsafe PDF links
 try:
@@ -344,6 +348,11 @@ if send_clicked:
                         run_id=run.id
                     )
                     if run_status.status in ["completed", "failed"]:
+                        break
+                    time.sleep(0.5)
+                    elapsed += 0.5
+                    if elapsed >= max_wait:
+                        st.error("Request timed out.")
                         break
 
                 if run_status.status == "completed":
