@@ -140,7 +140,7 @@ language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Re
 labels = {
     "English": {
         #"prompt": "Ask a medicine question:",
-        "placeholder": "💡 e.g: Can I take ibuprofen with Panadol?",
+        "placeholder": "💡 Ask a question about your medication e.g: Can I take ibuprofen with Panadol?",
         "send": "Send",
         "thinking": "Thinking...",
        # "tagline": "Helping Kiwis understand medicines, safely.",
