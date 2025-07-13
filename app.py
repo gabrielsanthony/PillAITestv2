@@ -120,7 +120,6 @@ st.markdown(f"""
 
 # Language selector
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
-use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False)
 
 labels = {
     "English": {
@@ -316,6 +315,7 @@ with col_center[1]:
             </style>
         """, unsafe_allow_html=True)
         explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
+        use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False)
 
 
 # Treat any non-empty question as a trigger (ENTER pressed)
