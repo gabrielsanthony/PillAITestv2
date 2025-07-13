@@ -41,29 +41,18 @@ st.markdown("""
     }
     div:empty { display: none !important; }
     .stTextInput input:focus { border: 2px solid orange !important; outline: none !important; }
-  .stButton button {
-    background-color: #3b82f6 !important;
-    color: white !important;
-    font-size: 1.1em !important;
-    padding: 0.6em 1em !important;
-    border-radius: 8px !important;
-    margin-top: 4px !important;
-    width: 100% !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-.stButton button:hover {
-    background-color: #2563eb !important;
-}
-
-.stButton button:focus,
-.stButton button:active {
-    background-color: #2563eb !important;
-    color: white !important;
-    outline: none !important;
-    box-shadow: none !important;
-}
+    .stButton button {
+        background-color: #3b82f6;
+        color: white;
+        font-size: 1.1em;
+        padding: 0.6em 1em;
+        border-radius: 8px;
+        margin-top: 4px;
+        width: 100%;
+    }
+    .stButton button:hover {
+        background-color: #2563eb;
+    }
 
     .block-container { padding-top: 2rem; padding-bottom: 2rem; }
     .section {
@@ -93,15 +82,14 @@ st.markdown("""
     .stSelectbox div[data-baseweb="select"]:hover {
         border-color: #999 !important;
     }
-   @media (max-width: 768px) {
-  .stTextInput input {
-      font-size: 1em !important;
-  }
-  .stButton button {
-      font-size: 1em !important;
-      padding: 0.6em !important;
-  }
-}  /* <-- This was missing */
+    @media (max-width: 768px) {
+    .stTextInput input {
+        font-size: 1em !important;
+    }
+    .stButton button {
+        font-size: 1em !important;
+        padding: 0.6em !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
