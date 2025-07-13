@@ -323,7 +323,8 @@ with col_center[1]:
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.1rem;
-                margin-top: 0.3rem;
+                margin-top: -0.5rem;
+                margin-bottom: 0.5rem;
             }
             label[data-testid="stToggle"] {
                 font-size: 1.05em;
