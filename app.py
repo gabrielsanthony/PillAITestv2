@@ -51,7 +51,8 @@ st.markdown("""
         width: 100%;
     }
     .stButton button:hover {
-        background-color: #2563eb;
+        background-color: #3b82f6;
+        font-size: 1.5em;
     }
 
     .block-container { padding-top: 2rem; padding-bottom: 2rem; }
