@@ -139,7 +139,7 @@ language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Re
 
 labels = {
     "English": {
-        "prompt": "Ask a medicine question:",
+        #"prompt": "Ask a medicine question:",
         "placeholder": "💡 e.g: Can I take ibuprofen with Panadol?",
         "send": "Send",
         "thinking": "Thinking...",
@@ -172,7 +172,7 @@ Contact us: pillai.nz.contact@gmail.com
 *Pill-AI is not a substitute for professional medical advice.*"""
     },
     "Te Reo Māori": {
-        "prompt": "Pātaihia tētahi pātai e pā ana ki te rongoā:",
+      #  "prompt": "Pātaihia tētahi pātai e pā ana ki te rongoā:",
         "placeholder": "💡 Hei tauira: Ka pai rānei te tango i te ibuprofen me te Panadol?",
         "send": "Tukua",
         "thinking": "E whakaaro ana...",
@@ -205,7 +205,7 @@ Whakapā mai: pillai.nz.contact@gmail.com
 *Ehara a Pill-AI i te whakakapi mō ngā tohutohu hauora.*"""
     },
     "Samoan": {
-        "prompt": "Fesili i se fesili e uiga i fualaau:",
+     #   "prompt": "Fesili i se fesili e uiga i fualaau:",
         "placeholder": "💡 Fa'ata'ita'iga: E mafai ona ou inuina le ibuprofen ma le Panadol?",
         "send": "Auina atu",
         "thinking": "O mafaufau...",
@@ -238,7 +238,7 @@ Imeli: pillai.nz.contact@gmail.com
 *Pill-AI e le suitulaga i fautuaga fa'apolofesa tau soifua mālōlōina.*"""
     },
     "Mandarin": {
-        "prompt": "请提出一个与药物有关的问题：",
+  #      "prompt": "请提出一个与药物有关的问题：",
         "placeholder": "💡 例如：布洛芬和扑热息痛可以一起吃吗？",
         "send": "发送",
         "thinking": "思考中...",
@@ -311,7 +311,7 @@ lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 
 # UI Section
 st.markdown("<div class='section'>", unsafe_allow_html=True)
-st.write(f"### 💬 {L['prompt']}")
+#st.write(f"### 💬 {L['prompt']}")
 
 # Wrap input and button in columns for mobile alignment
 col1, col2 = st.columns([4, 1])
