@@ -120,6 +120,7 @@ st.markdown(f"""
 
 # Language selector
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
+use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False)
 
 labels = {
     "English": {
@@ -268,7 +269,7 @@ if not api_key:
 
 client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
-if "thread_id" not in st.session_state:
+if use_memory and "thread_id" not in st.session_state:
     st.session_state["thread_id"] = client.beta.threads.create().id
 
 lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
@@ -329,46 +330,53 @@ if send_clicked:
             try:
                 adjusted_question = user_question
                 if explain_like_12:
-                    adjusted_question += " Please explain this in simple language suitable for a 12-year-old (I am not actually 12 though, dont use slang or colloquialisms, be encouraging)."
+                    adjusted_question += " Please explain this in simple language suitable for a 12-year-old (I am not actually 12 though, don’t use slang or colloquialisms, be encouraging)."
 
-                client.beta.threads.messages.create(
-                    thread_id=st.session_state["thread_id"],
-                    role="user",
-                    content=adjusted_question
-                )
-
-                run = client.beta.threads.runs.create(
-                    thread_id=st.session_state["thread_id"],
-                    assistant_id=ASSISTANT_ID
-                )
-
-                while True:
-                    run_status = client.beta.threads.runs.retrieve(
+                if use_memory:
+                    # Use memory mode
+                    client.beta.threads.messages.create(
                         thread_id=st.session_state["thread_id"],
-                        run_id=run.id
+                        role="user",
+                        content=adjusted_question
                     )
-                    if run_status.status in ["completed", "failed"]:
-                        break
-                    time.sleep(0.5)
-                    elapsed += 0.5
-                    if elapsed >= max_wait:
-                        st.error("Request timed out.")
-                        break
-
-                if run_status.status == "completed":
-                    messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"], limit=1)
-                    latest = messages.data[0]
-                    raw_answer = latest.content[0].text.value
-                    cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
-
-                    if language != "English" and language in lang_codes:
-                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
-                        st.success(translated)
+                    run = client.beta.threads.runs.create(
+                        thread_id=st.session_state["thread_id"],
+                        assistant_id=ASSISTANT_ID
+                    )
+                    while True:
+                        run_status = client.beta.threads.runs.retrieve(
+                            thread_id=st.session_state["thread_id"],
+                            run_id=run.id
+                        )
+                        if run_status.status in ["completed", "failed"]:
+                            break
+                    if run_status.status == "completed":
+                        messages = client.beta.threads.messages.list(
+                            thread_id=st.session_state["thread_id"], limit=1
+                        )
+                        raw_answer = messages.data[0].content[0].text.value
                     else:
-                        st.success(cleaned)
+                        raise RuntimeError("Threaded memory response failed.")
+
+                else:
+                    # Use fast chat model with no memory
+                    chat_response = openai.ChatCompletion.create(
+                        model="gpt-4",
+                        messages=[{"role": "user", "content": adjusted_question}],
+                        api_key=api_key
+                    )
+                    raw_answer = chat_response.choices[0].message.content
+
+                # Clean and translate if needed
+                cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
+                if language != "English" and language in lang_codes:
+                    translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
+                    st.success(translated)
+                else:
+                    st.success(cleaned)
 
             except Exception as e:
-                st.error(f"Error: {str(e)}")
+                st.error(f"{L['error']} \n\nDetails: {str(e)}")
 
 st.markdown("</div>", unsafe_allow_html=True)
 
