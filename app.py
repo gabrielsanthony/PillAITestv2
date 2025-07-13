@@ -360,7 +360,7 @@ if send_clicked:
 
                 else:
                     # Use fast chat model with no memory
-                    chat_response = client.chat.completion.create(
+                    chat_response = client.chat.completions.create(
                         model="gpt-4",
                         messages=[{"role": "user", "content": adjusted_question}]
                     )
