@@ -289,7 +289,7 @@ ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 #        explain_like_12 = st.toggle("🧠 Simplify the answer", value=False)
 #        use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False)
 
-#if use_memory and "thread_id" not in st.session_state:
+# and "thread_id" not in st.session_state:
 #    st.session_state["thread_id"] = client.beta.threads.create().id
 
 lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
