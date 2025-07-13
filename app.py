@@ -52,6 +52,7 @@ st.markdown("""
     }
     .stButton button:hover {
         background-color: #3b82f6;
+        color: white;
         font-size: 1.5em;
     }
 
