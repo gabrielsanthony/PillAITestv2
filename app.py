@@ -1,3 +1,4 @@
+
 import streamlit as st
 import openai
 import os
@@ -269,7 +270,7 @@ if not api_key:
 client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 
-# Centered toggles for simplify + memory
+# Larger, fully centered checkbox using container
 col_center = st.columns([1, 2, 1])
 with col_center[1]:
     with st.container():
@@ -277,18 +278,15 @@ with col_center[1]:
             <style>
             div[data-testid="stHorizontalBlock"] {
                 display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.4rem;
-                margin-top: 0.2rem;
+                justify-content: center;
             }
-            label[data-testid="stToggle"] {
-                font-size: 1.05em;
+            label[data-testid="stCheckbox"] {
+                font-size: 1.2em;
                 font-weight: 500;
             }
             </style>
         """, unsafe_allow_html=True)
-        explain_like_12 = st.toggle("🧠 Simplify the answer", value=True)
+        explain_like_12 = st.checkbox("🧠 Simplify the answer", value=True)
         use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False)
 
 if use_memory and "thread_id" not in st.session_state:
@@ -313,11 +311,6 @@ with col2:
     st.markdown("<div style='margin-top: 32px;'>", unsafe_allow_html=True)
     send_button = st.button(L["send"], use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
-
-# Add space below input + button
-st.markdown("<div style='margin-top: 12px;'></div>", unsafe_allow_html=True)
-
-
 
 # Override send_clicked to work with button
 send_clicked = send_button and user_question.strip() != ""
