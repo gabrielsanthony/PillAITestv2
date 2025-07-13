@@ -101,6 +101,7 @@ st.markdown("""
         font-size: 1em !important;
         padding: 0.6em !important;
     }
+     }
     </style>
 """, unsafe_allow_html=True)
 
