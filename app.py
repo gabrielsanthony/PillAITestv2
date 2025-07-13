@@ -90,6 +90,7 @@ st.markdown("""
     }
     .stButton button {
         font-size: 1em !important;
+        color: white;
         padding: 0.6em !important;
     }
     </style>
