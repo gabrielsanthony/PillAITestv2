@@ -269,24 +269,6 @@ if not api_key:
 client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 
-# Larger, fully centered checkbox using container
-col_center = st.columns([1, 2, 1])
-with col_center[1]:
-    with st.container():
-        st.markdown("""
-            <style>
-            div[data-testid="stHorizontalBlock"] {
-                display: flex;
-                justify-content: center;
-            }
-            label[data-testid="stCheckbox"] {
-                font-size: 1.2em;
-                font-weight: 500;
-            }
-            </style>
-        """, unsafe_allow_html=True)
-        explain_like_12 = st.toggle("🧠 Simplify the answer", value=False)
-        use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False)
 
 if use_memory and "thread_id" not in st.session_state:
     st.session_state["thread_id"] = client.beta.threads.create().id
