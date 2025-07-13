@@ -352,11 +352,11 @@ if send_clicked:
                     raw_answer = latest.content[0].text.value
                     cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
 
-                    if language in lang_codes:
-                        translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
-                        st.success(translated)
-                    else:
-                        st.success(cleaned)
+                  if language != "English" and language in lang_codes:
+                    translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
+                    st.success(translated)
+                else:
+                    st.success(cleaned)
 
             except Exception as e:
                 st.error(f"Error: {str(e)}")
