@@ -97,6 +97,10 @@ st.markdown("""
     .stSelectbox div[data-baseweb="select"]:hover {
         border-color: #999 !important;
     }
+    /* Reduce margin below the language dropdown */
+    div[data-testid="stSelectbox"] {
+    margin-bottom: 0.3rem !important;
+    }
     @media (max-width: 768px) {
     .stTextInput input {
         font-size: 1em !important;
