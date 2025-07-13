@@ -347,7 +347,7 @@ if send_clicked:
                         break
 
                 if run_status.status == "completed":
-                    messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"])
+                    messages = client.beta.threads.messages.list(thread_id=st.session_state["thread_id"], limit=1)
                     latest = messages.data[0]
                     raw_answer = latest.content[0].text.value
                     cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
