@@ -55,6 +55,12 @@ st.markdown("""
         color: white;
         font-size: 1.5em;
     }
+      .stButton button:focus {
+    background-color: #2563eb !important;
+    color: white !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
     .stButton button:active {
     background-color: #2563eb !important;
     color: white !important;
