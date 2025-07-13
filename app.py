@@ -362,8 +362,7 @@ if send_clicked:
                     # Use fast chat model with no memory
                     chat_response = openai.ChatCompletion.create(
                         model="gpt-4",
-                        messages=[{"role": "user", "content": adjusted_question}],
-                        api_key=api_key
+                        messages=[{"role": "user", "content": adjusted_question}]
                     )
                     raw_answer = chat_response.choices[0].message.content
 
