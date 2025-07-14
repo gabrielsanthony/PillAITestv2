@@ -24,14 +24,19 @@ def find_meds_in_text(text, medsafe_links, threshold=85):
     question = question.lower()
     meds_found = []
     
-       for med_key in medsafe_links:
-        # Clean med name from med_key
-        med_name = med_key.replace("source_", "").split(",")[0].replace("_", " ").lower()
+ # Helper: Find medicines mentioned in the user question using cleaned key names
+def find_meds_in_text(question, medsafe_links):
+    question = question.lower()
+    meds_found = []
 
-        # Fuzzy match full question to med name
-        score = fuzz.token_set_ratio(question, med_name)
-
-        if score >= threshold:
+    for med_key in medsafe_links:
+        clean_name = (
+            med_key.replace("source_", "")
+            .split(",")[0]
+            .replace("_", " ")
+            .lower()
+        )
+        if clean_name in question:
             meds_found.append(med_key)
 
     return meds_found
