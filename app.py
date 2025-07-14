@@ -20,13 +20,13 @@ except Exception as e:
 
 # 🔍 Helper: Find medicines mentioned in the user question
 def find_meds_in_text(text, medsafe_links):
-    text_lower = text.lower()
-    matches = set()
-    for med in medsafe_links:
-        med_parts = med.lower().split()
-        if any(part in text_lower for part in med_parts):
-            matches.add(med)
-    return sorted(matches)
+    text = text.lower()
+    meds_found = []
+    for med_key in medsafe_links:
+        # Check if any word in the question is part of the medsafe key
+        if any(word in med_key for word in text.split()):
+            meds_found.append(med_key)
+    return meds_found
 
 # Page config
 st.set_page_config(page_title="Pill-AI 2.0", page_icon="💊", layout="centered")
