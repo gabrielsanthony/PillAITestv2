@@ -20,23 +20,16 @@ except Exception as e:
     st.warning(f"Could not load Medsafe links: {e}")
 
 # 🔍 Helper: Find medicines mentioned in the user question
-def find_meds_in_text(text, medsafe_links, threshold=85):
-    question = question.lower()
-    meds_found = []
-    
- # Helper: Find medicines mentioned in the user question using cleaned key names
-def find_meds_in_text(question, medsafe_links):
-    question = question.lower()
+def find_meds_in_text(text, medsafe_links, threshold=70):
+    text = text.lower()
     meds_found = []
 
     for med_key in medsafe_links:
-        clean_name = (
-            med_key.replace("source_", "")
-            .split(",")[0]
-            .replace("_", " ")
-            .lower()
-        )
-        if clean_name in question:
+        med_name = med_key.replace("source_", "").replace("_", " ").lower()
+
+        # Fuzzy matching against the whole question
+        score = fuzz.partial_ratio(text, med_name)
+        if score >= threshold:
             meds_found.append(med_key)
 
     return meds_found
