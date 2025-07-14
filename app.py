@@ -22,19 +22,23 @@ except Exception as e:
 # 🔍 Helper: Find medicines mentioned in the user question
 def find_meds_in_text(text, medsafe_links, threshold=75):
     text = text.lower()
-    meds_found = []
+    best_matches = []
 
     for med_key in medsafe_links:
-        cleaned_key = med_key.replace("source_", "").replace("_", " ").lower()
-        score = fuzz.partial_ratio(text, cleaned_key)
+        # Clean the med name: remove "source_", replace underscores with spaces
+        cleaned_name = med_key.replace("source_", "").replace("_", " ").lower()
 
-        # 🔍 Debug line to help you see matching attempts
-        print(f"{cleaned_key} => {score}")
+        # Compare the user question to the cleaned med name
+        score = fuzz.partial_ratio(text, cleaned_name)
 
         if score >= threshold:
-            meds_found.append(med_key)
+            best_matches.append((med_key, score))
 
-    return meds_found
+    # Sort by score descending
+    best_matches.sort(key=lambda x: x[1], reverse=True)
+
+    # Return only the medsafe keys
+    return [match[0] for match in best_matches]
     
 # Page config
 st.set_page_config(page_title="Pill-AI 2.0", page_icon="💊", layout="centered")
@@ -445,8 +449,9 @@ if send_clicked:
                 else:
                     st.success(cleaned)
                     meds_found = find_meds_in_text(user_question, medsafe_links)
-                    st.write("🔍 Meds found:", meds_found)
-                    st.write("🧾 Medsafe keys:", list(medsafe_links.keys())[:10])  # just show 10 to test
+                    st.write("🧪 DEBUG: Showing fuzzy matches over threshold")
+                    for med in meds_found:
+                        st.write(f"{med} → {medsafe_links.get(med, 'No link found')}")
                     if meds_found:
                         st.markdown("### 🔗 Source links:")
                         for med in meds_found:
