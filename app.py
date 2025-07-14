@@ -6,7 +6,7 @@ import base64
 import json
 import time  # at the top of your file
 from deep_translator import GoogleTranslator
-from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz
 
 max_wait = 15  # seconds
 elapsed = 0
