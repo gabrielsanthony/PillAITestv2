@@ -21,8 +21,10 @@ except Exception as e:
 # 🔍 Helper: Find medicines mentioned in the user question
 def find_meds_in_text(text, medsafe_links):
     meds_found = []
+    text_lower = text.lower()
     for med in medsafe_links:
-        if med in text.lower():
+        med_parts = med.lower().split()
+        if any(part in text_lower for part in med_parts):
             meds_found.append(med)
     return meds_found
 
