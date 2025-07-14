@@ -27,9 +27,12 @@ def find_meds_in_text(text, medsafe_links, threshold=65):  # lowered threshold
 
     for med_key in medsafe_links:
         cleaned_name = med_key.replace("source_", "").replace("_", " ").lower()
-        score = fuzz.partial_ratio(text, cleaned_name)
-        # Always print score
-        st.write(f"🧪 Checking: '{cleaned_name}' → Score: {score}")
+        short_name = cleaned_name.split(",")[0]  # just the brand/generic name
+        score = max(
+            fuzz.partial_ratio(text, short_name),
+            fuzz.token_set_ratio(text, short_name)
+        )
+        st.write(f"🧪 Checking: '{short_name}' → Score: {score}")
         if score >= threshold:
             matches.append((med_key, score))
 
