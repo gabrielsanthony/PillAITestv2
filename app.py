@@ -20,25 +20,21 @@ except Exception as e:
     st.warning(f"Could not load Medsafe links: {e}")
 
 # 🔍 Helper: Find medicines mentioned in the user question
-def find_meds_in_text(text, medsafe_links, threshold=75):
+def find_meds_in_text(text, medsafe_links, threshold=65):  # lowered threshold
+    from rapidfuzz import fuzz
     text = text.lower()
-    best_matches = []
+    matches = []
 
     for med_key in medsafe_links:
-        # Clean the med name: remove "source_", replace underscores with spaces
         cleaned_name = med_key.replace("source_", "").replace("_", " ").lower()
-
-        # Compare the user question to the cleaned med name
         score = fuzz.partial_ratio(text, cleaned_name)
-
+        # Always print score
+        st.write(f"🧪 Checking: '{cleaned_name}' → Score: {score}")
         if score >= threshold:
-            best_matches.append((med_key, score))
+            matches.append((med_key, score))
 
-    # Sort by score descending
-    best_matches.sort(key=lambda x: x[1], reverse=True)
-
-    # Return only the medsafe keys
-    return [match[0] for match in best_matches]
+    matches.sort(key=lambda x: x[1], reverse=True)
+    return [match[0] for match in matches]
     
 # Page config
 st.set_page_config(page_title="Pill-AI 2.0", page_icon="💊", layout="centered")
