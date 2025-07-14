@@ -18,6 +18,14 @@ except Exception as e:
     medsafe_links = {}
     st.warning(f"Could not load Medsafe links: {e}")
 
+# 🔍 Helper: Find medicines mentioned in the user question
+def find_meds_in_text(text, medsafe_links):
+    meds_found = []
+    for med in medsafe_links:
+        if med in text.lower():
+            meds_found.append(med)
+    return meds_found
+
 # Page config
 st.set_page_config(page_title="Pill-AI 2.0", page_icon="💊", layout="centered")
 
@@ -426,6 +434,11 @@ if send_clicked:
                     st.success(translated)
                 else:
                     st.success(cleaned)
+                    meds_found = find_meds_in_text(user_question, medsafe_links)
+                    if meds_found:
+                        st.markdown("### 🔗 Source links:")
+                        for med in meds_found:
+                            st.markdown(f"- [{med.title()} CMI]({medsafe_links[med]})")
 
             except Exception as e:
                 st.error(f"{L['error']} \n\nDetails: {str(e)}")
