@@ -437,6 +437,8 @@ if send_clicked:
                 else:
                     st.success(cleaned)
                     meds_found = find_meds_in_text(user_question, medsafe_links)
+                    st.write("🔍 Meds found:", meds_found)
+                    st.write("🧾 Medsafe keys:", list(medsafe_links.keys())[:10])  # just show 10 to test
                     if meds_found:
                         st.markdown("### 🔗 Source links:")
                         for med in meds_found:
