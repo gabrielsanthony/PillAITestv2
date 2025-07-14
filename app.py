@@ -6,6 +6,7 @@ import base64
 import json
 import time  # at the top of your file
 from deep_translator import GoogleTranslator
+from fuzzywuzzy import fuzz
 
 max_wait = 15  # seconds
 elapsed = 0
@@ -19,13 +20,20 @@ except Exception as e:
     st.warning(f"Could not load Medsafe links: {e}")
 
 # 🔍 Helper: Find medicines mentioned in the user question
-def find_meds_in_text(text, medsafe_links):
-    text = text.lower()
+def find_meds_in_text(text, medsafe_links, threshold=85):
+    question = question.lower()
     meds_found = []
-    for med_key in medsafe_links:
-        # Check if any word in the question is part of the medsafe key
-        if any(word in med_key for word in text.split()):
+    
+       for med_key in medsafe_links:
+        # Clean med name from med_key
+        med_name = med_key.replace("source_", "").split(",")[0].replace("_", " ").lower()
+
+        # Fuzzy match full question to med name
+        score = fuzz.token_set_ratio(question, med_name)
+
+        if score >= threshold:
             meds_found.append(med_key)
+
     return meds_found
 
 # Page config
