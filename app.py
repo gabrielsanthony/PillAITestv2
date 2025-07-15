@@ -256,6 +256,14 @@ Imeli: pillai.nz.contact@gmail.com
 # Get selected labels
 L = labels.get(language, labels["English"])
 
+medsafe_footers = {
+    "English": "\n\n---\n_This information has been sourced from Medsafe NZ._ [https://www.medsafe.govt.nz/medicines/infoSearch.asp](https://www.medsafe.govt.nz/medicines/infoSearch.asp)",
+    "Te Reo Māori": "\n\n---\n_I ahu mai tēnei pārongo i Medsafe Aotearoa._ [https://www.medsafe.govt.nz/medicines/infoSearch.asp](https://www.medsafe.govt.nz/medicines/infoSearch.asp)",
+    "Samoan": "\n\n---\n_O lenei fa'amatalaga e sau mai Medsafe Niu Sila._ [https://www.medsafe.govt.nz/medicines/infoSearch.asp](https://www.medsafe.govt.nz/medicines/infoSearch.asp)",
+    "Mandarin": "\n\n---\n_本信息来自新西兰 Medsafe。_ [https://www.medsafe.govt.nz/medicines/infoSearch.asp](https://www.medsafe.govt.nz/medicines/infoSearch.asp)"
+}
+medsafe_footer = medsafe_footers.get(language, medsafe_footers["English"])
+
 # OpenAI setup
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
@@ -373,9 +381,9 @@ if send_clicked:
                 cleaned = re.sub(r'【[^】]*】', '', raw_answer).strip()
                 if language != "English" and language in lang_codes:
                     translated = GoogleTranslator(source='auto', target=lang_codes[language]).translate(cleaned)
-                    st.success(translated)
+                    st.success(translated + medsafe_footer)
                 else:
-                    st.success(cleaned)
+                    st.success(cleaned + medsafe_footer)
 
             except Exception as e:
                 st.error(f"{L['error']} \n\nDetails: {str(e)}")
