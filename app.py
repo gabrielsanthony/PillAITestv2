@@ -654,3 +654,17 @@ faq_title = {
 
 with st.expander(faq_title):
     st.markdown(faq_sections.get(language, faq_sections["English"]))
+# Optional: Show chat history if memory is enabled
+if use_memory and "thread_id" in st.session_state:
+    with st.expander("🧠 View chat history"):
+        try:
+            history_messages = client.beta.threads.messages.list(
+                thread_id=st.session_state["thread_id"],
+                order="asc"
+            )
+            for msg in history_messages.data:
+                role = msg.role.capitalize()
+                content = msg.content[0].text.value.strip()
+                st.markdown(f"**{role}:** {content}")
+        except Exception as e:
+            st.warning("Could not load chat history.")
