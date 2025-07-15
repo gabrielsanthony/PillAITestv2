@@ -11,7 +11,7 @@ max_wait = 15  # seconds
 elapsed = 0
 
 # Page config
-st.set_page_config(page_title="Pill-AI 2.0", page_icon="💊", layout="centered")
+st.set_page_config(page_title="Pill-AI 2.0", page_icon="💊", layout="wide")
 
 # Custom CSS
 st.markdown("""
