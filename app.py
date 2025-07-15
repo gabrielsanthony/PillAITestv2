@@ -1,3 +1,5 @@
+This code 16/7 doesn’t work yet for the source links : 
+
 import streamlit as st
 import openai
 import os
@@ -6,6 +8,7 @@ import base64
 import json
 import time  # at the top of your file
 from deep_translator import GoogleTranslator
+from rapidfuzz import fuzz
 
 max_wait = 15  # seconds
 elapsed = 0
@@ -18,6 +21,26 @@ except Exception as e:
     medsafe_links = {}
     st.warning(f"Could not load Medsafe links: {e}")
 
+# 🔍 Helper: Find medicines mentioned in the user question
+def find_meds_in_text(text, medsafe_links, threshold=65):  # lowered threshold
+    from rapidfuzz import fuzz
+    text = text.lower()
+    matches = []
+
+    for med_key in medsafe_links:
+        cleaned_name = med_key.replace("source_", "").replace("_", " ").lower()
+        short_name = cleaned_name.split(",")[0]  # just the brand/generic name
+        score = max(
+            fuzz.partial_ratio(text, short_name),
+            fuzz.token_set_ratio(text, short_name)
+        )
+        st.write(f"🧪 Checking: '{short_name}' → Score: {score}")
+        if score >= threshold:
+            matches.append((med_key, score))
+
+    matches.sort(key=lambda x: x[1], reverse=True)
+    return [match[0] for match in matches]
+    
 # Page config
 st.set_page_config(page_title="Pill-AI 2.0", page_icon="💊", layout="centered")
 
@@ -97,6 +120,10 @@ st.markdown("""
     .stSelectbox div[data-baseweb="select"]:hover {
         border-color: #999 !important;
     }
+    /* Reduce margin below the language dropdown */
+    div[data-testid="stSelectbox"] {
+    margin-bottom: 0.3rem !important;
+    }
     @media (max-width: 768px) {
     .stTextInput input {
         font-size: 1em !important;
@@ -119,31 +146,31 @@ if os.path.exists("pillai_logo.png"):
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
 # Initial tagline (before language selection)
-fallback_tagline = " Helping Kiwis understand their pills, safely."
-st.markdown(f"""
-    <div style='
-        background: #e0f7fa;
-        border-left: 6px solid #00acc1;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-size: 1em;
-        margin-bottom: 1.2rem;
-        color: #006064;
-    '>
-        💊 <strong>{fallback_tagline}</strong>
-    </div>
-""", unsafe_allow_html=True)
+#fallback_tagline = " Helping Kiwis understand their pills, safely."
+#st.markdown(f"""
+#    <div style='
+#        background: #e0f7fa;
+#        border-left: 6px solid #00acc1;
+#        padding: 10px 16px;
+#        border-radius: 8px;
+#        font-size: 1em;
+#        margin-bottom: 1.2rem;
+#        color: #006064;
+#    '>
+#        💊 <strong>{fallback_tagline}</strong>
+#    </div>
+#""", unsafe_allow_html=True)
 
 # Language selector
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
 
 labels = {
     "English": {
-        "prompt": "Ask a medicine question:",
-        "placeholder": "💡 e.g: Can I take ibuprofen with Panadol?",
+        #"prompt": "Ask a medicine question:",
+        "placeholder": "💡 Ask a medication related question",
         "send": "Send",
         "thinking": "Thinking...",
-        "tagline": "Helping Kiwis understand medicines, safely.",
+       # "tagline": "Helping Kiwis understand medicines, safely.",
         "empty": "Please enter a question.",
         "error": "The assistant failed to complete the request.",
         "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP.",
@@ -172,11 +199,11 @@ Contact us: pillai.nz.contact@gmail.com
 *Pill-AI is not a substitute for professional medical advice.*"""
     },
     "Te Reo Māori": {
-        "prompt": "Pātaihia tētahi pātai e pā ana ki te rongoā:",
+      #  "prompt": "Pātaihia tētahi pātai e pā ana ki te rongoā:",
         "placeholder": "💡 Hei tauira: Ka pai rānei te tango i te ibuprofen me te Panadol?",
         "send": "Tukua",
         "thinking": "E whakaaro ana...",
-        "tagline": "Āwhinatia ngā Kiwi kia mārama ki ā rātou rongoā mā ngā kōrero mai i a Medsafe.",
+      #  "tagline": "Āwhinatia ngā Kiwi kia mārama ki ā rātou rongoā mā ngā kōrero mai i a Medsafe.",
         "empty": "Tēnā koa, tuhia he pātai.",
         "error": "I rahua te kaiawhina ki te whakaoti i te tono.",
         "disclaimer": "⚠️ Ehara a Pill-AI i te kaiārahi hauora tōtika. Me toro atu ki te rata, te kai rongoā rānei.",
@@ -205,11 +232,11 @@ Whakapā mai: pillai.nz.contact@gmail.com
 *Ehara a Pill-AI i te whakakapi mō ngā tohutohu hauora.*"""
     },
     "Samoan": {
-        "prompt": "Fesili i se fesili e uiga i fualaau:",
+     #   "prompt": "Fesili i se fesili e uiga i fualaau:",
         "placeholder": "💡 Fa'ata'ita'iga: E mafai ona ou inuina le ibuprofen ma le Panadol?",
         "send": "Auina atu",
         "thinking": "O mafaufau...",
-        "tagline": "Fesoasoani i tagata Niu Sila ia malamalama i a latou fualaau e ala i fa'amatalaga fa'atuatuaina mai le Medsafe.",
+      #  "tagline": "Fesoasoani i tagata Niu Sila ia malamalama i a latou fualaau e ala i fa'amatalaga fa'atuatuaina mai le Medsafe.",
         "empty": "Fa'amolemole tusia se fesili.",
         "error": "Le mafai e le fesoasoani ona tali atu.",
         "disclaimer": "⚠️ E le suitulaga Pill-AI i se foma'i moni. Fa'amolemole fa'afeso'ota'i se foma'i po'o se fomai fai fualaau.",
@@ -238,11 +265,11 @@ Imeli: pillai.nz.contact@gmail.com
 *Pill-AI e le suitulaga i fautuaga fa'apolofesa tau soifua mālōlōina.*"""
     },
     "Mandarin": {
-        "prompt": "请提出一个与药物有关的问题：",
+  #      "prompt": "请提出一个与药物有关的问题：",
         "placeholder": "💡 例如：布洛芬和扑热息痛可以一起吃吗？",
         "send": "发送",
         "thinking": "思考中...",
-        "tagline": "通过 Medsafe 的可靠信息帮助新西兰人了解他们的药物。",
+   #     "tagline": "通过 Medsafe 的可靠信息帮助新西兰人了解他们的药物。",
         "empty": "请输入一个问题。",
         "error": "助手未能完成请求。",
         "disclaimer": "⚠️ Pill-AI 不能替代专业医疗建议。请咨询医生或药剂师。",
@@ -311,7 +338,7 @@ lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 
 # UI Section
 st.markdown("<div class='section'>", unsafe_allow_html=True)
-st.write(f"### 💬 {L['prompt']}")
+#st.write(f"### 💬 {L['prompt']}")
 
 # Wrap input and button in columns for mobile alignment
 col1, col2 = st.columns([4, 1])
@@ -422,6 +449,14 @@ if send_clicked:
                     st.success(translated)
                 else:
                     st.success(cleaned)
+                    meds_found = find_meds_in_text(user_question, medsafe_links)
+                    st.write("🧪 DEBUG: Showing fuzzy matches over threshold")
+                    for med in meds_found:
+                        st.write(f"{med} → {medsafe_links.get(med, 'No link found')}")
+                    if meds_found:
+                        st.markdown("### 🔗 Source links:")
+                        for med in meds_found:
+                            st.markdown(f"- [{med.title()} CMI]({medsafe_links[med]})")
 
             except Exception as e:
                 st.error(f"{L['error']} \n\nDetails: {str(e)}")
@@ -439,3 +474,206 @@ st.markdown(f"""
 with st.expander(L["privacy_title"]):
     st.markdown(L["privacy"])
 
+# FAQ content in multiple languages
+faq_sections = {
+    "English": """
+### ❓ Frequently Asked Questions (FAQ)
+
+#### 💊 About Pill-AI
+**What is Pill-AI?**  
+Pill-AI is a friendly chatbot that helps New Zealanders understand their medicines.  
+**Who is it for?**  
+Everyday Kiwis, especially those who:  
+– Struggle with medical language  
+– Are visually impaired  
+– Prefer simpler explanations  
+– Want quick answers on their phone  
+**Is it free?**  
+Yes.
+
+#### 📚 Where the Info Comes From
+**Where does Pill-AI get its answers?**  
+From Medsafe Consumer Medicine Information (CMI) leaflets.  
+**Can I trust it?**  
+Yes, but always check with a health professional too.
+
+#### 🗨️ Using Pill-AI
+**What can I ask?**  
+– "What is cetirizine for?"  
+– "Can I take ibuprofen with food?"  
+**Does it give medical advice?**  
+No. It only explains medicine info — it doesn’t diagnose or prescribe.  
+**Can I upload a prescription?**  
+Coming soon.
+
+#### 🌐 Languages
+**What languages are supported?**  
+English, Te Reo Māori, Samoan, Mandarin.  
+**Are the translations perfect?**  
+Not always — they use AI. Ask a health worker if unsure.
+
+#### 🔐 Privacy and Safety
+**Is my data private?**  
+Yes. Questions aren't stored.  
+**Is this an emergency service?**  
+No. Call 111 if it’s urgent.
+
+#### 🧪 Feedback and Credits
+**Can I help improve Pill-AI?**  
+Yes — especially if you speak Te Reo or Samoan.  
+**Who made this?**  
+It was developed in Aotearoa NZ using Medsafe info to make medicine info more accessible.
+""",
+    "Te Reo Māori": """
+### ❓ He Pātai Auau
+
+#### 💊 Mō Pill-AI
+**He aha a Pill-AI?**  
+He kaiawhina ā-ipurangi hei whakamārama i ngā rongoā.  
+**Mō wai tēnei?**  
+Mō ngā tāngata katoa — otirā te hunga:  
+– E uaua ana ki te mārama ki ngā kupu hauora  
+– Kua ngoikore te kite  
+– E hiahia ana i ngā whakamārama māmā  
+**He utu āwhina?**  
+Kāo – he kore utu.
+
+#### 📚 Nō hea ngā pārongo?
+**Kei hea e tiki ana a Pill-AI i ngā kōrero?**  
+Mai i ngā tuhinga CMI a Medsafe.  
+**Ka taea te whakawhirinaki?**  
+Āe – engari me ui tonu ki tō rata, ki te kaiwhakarato hauora hoki.
+
+#### 🗨️ Te whakamahi i a Pill-AI
+**He aha ngā pātai ka taea?**  
+– "He aha te mahi a cetirizine?"  
+– "Ka taea te kai me te ibuprofen?"  
+**Ka tuku tohutohu hauora?**  
+Kāo – he whakamārama anake, kāore e tuku tohutohu, āta wānanga rānei.  
+**Ka taea te tuku whakaahua o te rongoā?**  
+Ā tōna wā.
+
+#### 🌐 Ngā Reo
+**Ngā reo tautoko:**  
+Te Reo Māori, Ingarihi, Gagana Sāmoa, Mandarin.  
+**He tika ngā whakamāoritanga?**  
+Kāore i te tino tika i ngā wā katoa – whakamahia mā te āta whakaaro.
+
+#### 🔐 Te Tūmataiti me te Haumaru
+**Ka tiakina taku raraunga?**  
+Āe – kāore mātou e penapena i ngā pātai.  
+**He ratonga ohotata tēnei?**  
+Kāo – waea atu ki te 111 mēnā he ohotata.
+
+#### 🧪 Urupare
+**Ka taea te tuku urupare?**  
+Āe – āwhina mai mēnā e mōhio ana koe ki Te Reo.  
+**Nā wai i waihanga?**  
+Nā tētahi kairangahau i Aotearoa hei āwhina i te marea.
+""",
+    "Samoan": """
+### ❓ Fesili e masani ona fesiligia
+
+#### 💊 E uiga i Pill-AI
+**O le ā le Pill-AI?**  
+O se fesoasoani fa'akomepiuta e fesoasoani ia te oe e malamalama i fualaau.  
+**Mo ai?**  
+Mo tagata uma — aemaise i ē:  
+– E faigatā ona malamalama i le gagana fa'afoma'i  
+– E le lelei le vaai  
+– E mana'o i se fa'amatalaga faigofie  
+**E totogi?**  
+Leai – e fua fua.
+
+#### 📚 O fea mai ai fa'amatalaga?
+**O fea e maua mai ai fa'amatalaga a Pill-AI?**  
+Mai Medsafe – CMI pepa.  
+**E mafai ona fa'atuatuaina?**  
+Ioe – ae fesili pea i lau foma'i.
+
+#### 🗨️ Fa'aoga
+**O le ā e mafai ona ou fesili ai?**  
+– "O le ā le cetirizine?"  
+– "E mafai ona inu ibuprofen ma le taumafataga?"  
+**E foa'i fautuaga fa'afoma'i?**  
+Leai – e fa'amatala atu na'o le fa'amatalaga.  
+**E mafai ona ou lafoina se vaila'au pepa?**  
+O lo'o galue iai.
+
+#### 🌐 Gagana
+**O ā gagana e avanoa?**  
+Gagana Peretania, Te Reo Māori, Gagana Samoa, Mandarin.  
+**E atoatoa faaliliuga?**  
+E le atoatoa – fa'amalie atu.
+
+#### 🔐 Fa'alilolilo ma le Saogalemu
+**E fa'apefea ona puipuia a'u fa'amatalaga?**  
+E le teuina au fesili.  
+**O se auaunaga fa'afuase'i?**  
+Leai – vala'au le 111 pe a manaomia.
+
+#### 🧪 Fesoasoani
+**E mafai ona ou fesoasoani e fa'aleleia?**  
+Ioe – aemaise pe a mafai ona e fesoasoani i le gagana.  
+**O ai na faia?**  
+Na fausia i Niu Sila mo tagata Niu Sila.
+""",
+    "Mandarin": """
+### ❓ 常见问题 (FAQ)
+
+#### 💊 关于 Pill-AI
+**什么是 Pill-AI？**  
+Pill-AI 是一个帮助新西兰人了解药品信息的聊天机器人。  
+**适合谁使用？**  
+适合所有人，特别是：  
+– 难以理解医疗术语的人  
+– 视力不好的人  
+– 想要简明易懂解释的人  
+**是免费的吗？**  
+是的，完全免费。
+
+#### 📚 信息来源
+**Pill-AI 的信息来源是哪里？**  
+来自新西兰 Medsafe 的 CMI（药品说明书）。  
+**这些信息可靠吗？**  
+可靠，但建议同时咨询医生或药剂师。
+
+#### 🗨️ 如何使用 Pill-AI
+**我可以问什么？**  
+– “Cetirizine 有什么作用？”  
+– “饭前可以吃布洛芬吗？”  
+**会提供医疗建议吗？**  
+不会，它只解释药品信息，不提供诊断或处方。  
+**可以上传处方照片吗？**  
+即将推出。
+
+#### 🌐 支持的语言
+**支持哪些语言？**  
+英语、毛利语、萨摩亚语、中文。  
+**翻译准确吗？**  
+并非完全准确，重要问题请咨询专业人士。
+
+#### 🔐 隐私与安全
+**我的问题会被记录吗？**  
+不会，问题不会被存储。  
+**这是不是紧急服务？**  
+不是。如遇紧急情况，请拨打 111。
+
+#### 🧪 意见与反馈
+**我可以帮助改进吗？**  
+可以，尤其是懂双语的用户。  
+**这个工具是谁做的？**  
+由新西兰团队开发，目的是让药品信息更易懂。
+"""
+}
+
+# Add FAQ section using language-based selection
+faq_title = {
+    "English": "❓ FAQ – Click to expand",
+    "Te Reo Māori": "❓ He Pātai Auau – Pāwhiritia kia kite",
+    "Samoan": "❓ Fesili masani – Kiliki e faitau",
+    "Mandarin": "❓ 常见问题 – 点击展开"
+}.get(language, "❓ FAQ – Click to expand")
+
+with st.expander(faq_title):
+    st.markdown(faq_sections.get(language, faq_sections["English"]))
