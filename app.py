@@ -279,19 +279,69 @@ lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 #st.write(f"### 💬 {L['prompt']}")
 
-# Wrap input and button in columns for mobile alignment
-col1, col2 = st.columns([4, 1])
-with col1:
-    user_question = st.text_input(
-        label="",
-        placeholder=L["placeholder"],
-        key="question_input"
-    )
+# 🔁 Replace old input/button columns with this responsive block
+st.markdown("""
+<style>
+.responsive-input-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 12px;
+    margin-bottom: 6px;
+}
 
-with col2:
-    st.markdown("<div style='margin-top: 32px;'>", unsafe_allow_html=True)
-    send_button = st.button(L["send"], use_container_width=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+.responsive-input-container input {
+    flex-grow: 1;
+    min-width: 200px;
+    padding: 10px;
+    font-size: 1.1em;
+    border: 2px solid black;
+    border-radius: 6px;
+    background-color: #eeeeee;
+    color: black;
+}
+
+.responsive-input-container button {
+    padding: 10px 16px;
+    font-size: 1.1em;
+    border-radius: 6px;
+    border: none;
+    background-color: #3b82f6;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .responsive-input-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .responsive-input-container input,
+    .responsive-input-container button {
+        width: 100% !important;
+    }
+}
+</style>
+
+<div class="responsive-input-container">
+""", unsafe_allow_html=True)
+
+# Create text input inline
+user_question = st.text_input(
+    label="",
+    placeholder=L["placeholder"],
+    label_visibility="collapsed",
+    key="question_input"
+)
+
+# Manually insert the send button next to the input
+send_button = st.button(L["send"], use_container_width=False)
+
+# Close the flexbox container
+st.markdown("</div>", unsafe_allow_html=True)
 
 # Add toggles BELOW the input box and send button
 col_center = st.columns([1, 2, 1])
