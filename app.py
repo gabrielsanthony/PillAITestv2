@@ -114,22 +114,6 @@ if os.path.exists("pillai_logo.png"):
     logo_base64 = get_base64_image("pillai_logo.png")
     st.markdown(f"<div style='text-align: center;'><img src='{logo_base64}' width='240' style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
-# Initial tagline (before language selection)
-#fallback_tagline = " Helping Kiwis understand their pills, safely."
-#st.markdown(f"""
-#    <div style='
-#        background: #e0f7fa;
-#        border-left: 6px solid #00acc1;
-#        padding: 10px 16px;
-#        border-radius: 8px;
-#        font-size: 1em;
-#        margin-bottom: 1.2rem;
-#        color: #006064;
-#    '>
-#        💊 <strong>{fallback_tagline}</strong>
-#    </div>
-#""", unsafe_allow_html=True)
-
 # Language selector
 language = st.selectbox("\U0001f310 Choose answer language:", ["English", "Te Reo Māori", "Samoan", "Mandarin"])
 
@@ -281,28 +265,6 @@ if not api_key:
 client = openai.OpenAI(api_key=api_key)
 ASSISTANT_ID = "asst_dslQlYKM5FYGVEWj8pu7afAt"
 
-# Larger, fully centered checkbox using container
-#col_center = st.columns([1, 2, 1])
-#with col_center[1]:
-#    with st.container():
-#        st.markdown("""
-#           <style>
-#            div[data-testid="stHorizontalBlock"] {
-#                display: flex;
-#                justify-content: center;
-#            }
-#            label[data-testid="stCheckbox"] {
-#                font-size: 1.2em;
-#                font-weight: 500;
-#            }
-#            </style>
-#        """, unsafe_allow_html=True)
-#        explain_like_12 = st.toggle("🧠 Simplify the answer", value=False)
-#        use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False)
-
-# and "thread_id" not in st.session_state:
-#    st.session_state["thread_id"] = client.beta.threads.create().id
-
 lang_codes = {"Te Reo Māori": "mi", "Samoan": "sm", "Mandarin": "zh-CN"}
 
 # UI Section
@@ -358,11 +320,7 @@ send_clicked = send_button and user_question.strip() != ""
 # Add space
 st.markdown("<div style='margin-top: 14px;'></div>", unsafe_allow_html=True)
 
-
-
-
 # Treat any non-empty question as a trigger (ENTER pressed)
-# send_clicked = user_question.strip() != "" and st.session_state.get("question_submitted") != user_question
 if send_clicked:
     st.session_state["question_submitted"] = user_question
 
