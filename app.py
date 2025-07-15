@@ -6,39 +6,10 @@ import base64
 import json
 import time  # at the top of your file
 from deep_translator import GoogleTranslator
-from rapidfuzz import fuzz
 
 max_wait = 15  # seconds
 elapsed = 0
 
-# Load Medsafe PDF links
-try:
-    with open("medsafe_source_links_cleaned.json", "r") as f:
-        medsafe_links = json.load(f)
-except Exception as e:
-    medsafe_links = {}
-    st.warning(f"Could not load Medsafe links: {e}")
-
-# 🔍 Helper: Find medicines mentioned in the user question
-def find_meds_in_text(text, medsafe_links, threshold=65):  # lowered threshold
-    from rapidfuzz import fuzz
-    text = text.lower()
-    matches = []
-
-    for med_key in medsafe_links:
-        cleaned_name = med_key.replace("source_", "").replace("_", " ").lower()
-        short_name = cleaned_name.split(",")[0]  # just the brand/generic name
-        score = max(
-            fuzz.partial_ratio(text, short_name),
-            fuzz.token_set_ratio(text, short_name)
-        )
-        st.write(f"🧪 Checking: '{short_name}' → Score: {score}")
-        if score >= threshold:
-            matches.append((med_key, score))
-
-    matches.sort(key=lambda x: x[1], reverse=True)
-    return [match[0] for match in matches]
-    
 # Page config
 st.set_page_config(page_title="Pill-AI 2.0", page_icon="💊", layout="centered")
 
@@ -447,14 +418,6 @@ if send_clicked:
                     st.success(translated)
                 else:
                     st.success(cleaned)
-                    meds_found = find_meds_in_text(user_question, medsafe_links)
-                    st.write("🧪 DEBUG: Showing fuzzy matches over threshold")
-                    for med in meds_found:
-                        st.write(f"{med} → {medsafe_links.get(med, 'No link found')}")
-                    if meds_found:
-                        st.markdown("### 🔗 Source links:")
-                        for med in meds_found:
-                            st.markdown(f"- [{med.title()} CMI]({medsafe_links[med]})")
 
             except Exception as e:
                 st.error(f"{L['error']} \n\nDetails: {str(e)}")
