@@ -1,5 +1,3 @@
-This code 16/7 doesn’t work yet for the source links : 
-
 import streamlit as st
 import openai
 import os
