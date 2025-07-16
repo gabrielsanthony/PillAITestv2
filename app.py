@@ -394,22 +394,23 @@ with col_center[1]:
             }
             </style>
         """, unsafe_allow_html=True)
-       col1, col2 = st.columns(2)
+       
+        col1, col2 = st.columns(2)
 
         with col1:
             explain_like_12 = st.toggle("✨ Simplify the answer", value=False, key="simplify_toggle")
             st.markdown("""
-            <div class="tooltip-wrap">ℹ️
-                <span class="tooltip-text">Uses simpler language</span>
-            </div>
+                <div class="tooltip-wrap">ℹ️
+                    <span class="tooltip-text">Uses simpler language</span>
+                </div>
             """, unsafe_allow_html=True)
 
         with col2:
             use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False, key="memory_toggle")
             st.markdown("""
-            <div class="tooltip-wrap">ℹ️
-                <span class="tooltip-text">Allows Pill-AI to remember your question context for follow-up questions.</span>
-            </div>
+                <div class="tooltip-wrap">ℹ️
+                    <span class="tooltip-text">Allows Pill-AI to remember your question context for follow-up questions.</span>
+                </div>
             """, unsafe_allow_html=True)
 
 if use_memory and "thread_id" not in st.session_state:
