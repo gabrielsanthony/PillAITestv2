@@ -108,6 +108,11 @@ st.markdown("""
     display: inline-block;
 }
 
+.tooltip-wrap {
+    position: relative;
+    display: inline-block;
+}
+
 .tooltip-wrap .tooltip-text {
     visibility: hidden;
     width: 220px;
@@ -397,23 +402,27 @@ with col_center[1]:
        
         col1, col2 = st.columns(2)
 
+       col1, col2 = st.columns(2)
+
         with col1:
             st.markdown("""
-                <div class="tooltip-wrap" style="margin-bottom: -10px;">
-                    <label style="font-weight: 500;">✨ Simplify the answer</label>
-                    <span class="tooltip-text">Uses simpler language to explain the answer in a way that's easier to understand.</span>
+                <div class="tooltip-wrap" style="margin-bottom: -6px;">
+                    <label style="font-weight: 500;">✨ Simplify the answer
+                        <span class="tooltip-text">Uses simpler language to explain the answer in a way that's easier to understand.</span>
+                    </label>
                 </div>
             """, unsafe_allow_html=True)
-            explain_like_12 = st.toggle(label="", key="simplify_toggle")
-        
+            explain_like_12 = st.toggle("", key="simplify_toggle")
+
         with col2:
             st.markdown("""
-                <div class="tooltip-wrap" style="margin-bottom: -10px;">
-                    <label style="font-weight: 500;">🧠 Enable memory for follow-up questions</label>
-                    <span class="tooltip-text">Allows Pill-AI to remember your question context for follow-up questions.</span>
+                <div class="tooltip-wrap" style="margin-bottom: -6px;">
+                    <label style="font-weight: 500;">🧠 Enable memory for follow-up questions
+                        <span class="tooltip-text">Allows Pill-AI to remember your question context for follow-up questions.</span>
+                    </label>
                 </div>
             """, unsafe_allow_html=True)
-            use_memory = st.toggle(label="", key="memory_toggle")
+            use_memory = st.toggle("", key="memory_toggle")
 
 if use_memory and "thread_id" not in st.session_state:
     st.session_state["thread_id"] = client.beta.threads.create().id
