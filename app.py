@@ -126,7 +126,7 @@ labels = {
        # "tagline": "Helping Kiwis understand medicines, safely.",
         "empty": "Please enter a question.",
         "error": "The assistant failed to complete the request.",
-        "disclaimer": "⚠️ Pill-AI is not a substitute for professional medical advice. Always consult a pharmacist or GP.",
+        "disclaimer": "⚠️ Please contact your pharmacist or doctor, or Healthline (0800 611 116) if you have any concerns or questions about your medications.",
         "privacy_title": "🔐 Privacy Policy – Click to expand",
         "privacy": """### 🛡️ Pill-AI Privacy Policy (Prototype Version)
 
