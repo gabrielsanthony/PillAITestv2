@@ -365,8 +365,8 @@ with col_center[1]:
             }
             </style>
         """, unsafe_allow_html=True)
-        explain_like_12 = st.toggle("✨ Simplify the answer", value=False, key="simplify_toggle")
-        use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False, key="memory_toggle")
+        explain_like_12 = st.toggle("✨ Simplify the answer's language", value=False, key="simplify_toggle")
+        use_memory = st.toggle("🧠 Memorise previous answers for context in follow-up questions", value=False, key="memory_toggle")
 
 if use_memory and "thread_id" not in st.session_state:
     st.session_state["thread_id"] = client.beta.threads.create().id
