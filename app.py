@@ -395,23 +395,23 @@ with col_center[1]:
             </style>
         """, unsafe_allow_html=True)
        
-       col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
 
         with col1:
             st.markdown("""
-            <div class="tooltip-wrap" style="margin-bottom: -10px;">
-                <label style="font-weight: 500;">✨ Simplify the answer</label>
-                <span class="tooltip-text">Uses simpler language to explain the answer in a way that's easier to understand.</span>
-            </div>
+                <div class="tooltip-wrap" style="margin-bottom: -10px;">
+                    <label style="font-weight: 500;">✨ Simplify the answer</label>
+                    <span class="tooltip-text">Uses simpler language to explain the answer in a way that's easier to understand.</span>
+                </div>
             """, unsafe_allow_html=True)
             explain_like_12 = st.toggle(label="", key="simplify_toggle")
         
         with col2:
             st.markdown("""
-            <div class="tooltip-wrap" style="margin-bottom: -10px;">
-                <label style="font-weight: 500;">🧠 Enable memory for follow-up questions</label>
-                <span class="tooltip-text">Allows Pill-AI to remember your question context for follow-up questions.</span>
-            </div>
+                <div class="tooltip-wrap" style="margin-bottom: -10px;">
+                    <label style="font-weight: 500;">🧠 Enable memory for follow-up questions</label>
+                    <span class="tooltip-text">Allows Pill-AI to remember your question context for follow-up questions.</span>
+                </div>
             """, unsafe_allow_html=True)
             use_memory = st.toggle(label="", key="memory_toggle")
 
