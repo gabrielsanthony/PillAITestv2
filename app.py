@@ -102,40 +102,6 @@ st.markdown("""
         color: white;
         padding: 0.6em !important;
     }
-
-    .tooltip-wrap {
-    position: relative;
-    display: inline-block;
-}
-
-.tooltip-wrap {
-    position: relative;
-    display: inline-block;
-}
-
-.tooltip-wrap .tooltip-text {
-    visibility: hidden;
-    width: 220px;
-    background-color: #f9f9f9;
-    color: #333;
-    text-align: left;
-    border-radius: 6px;
-    padding: 8px;
-    position: absolute;
-    z-index: 1;
-    top: -8px;
-    left: 105%;
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 0.85em;
-    border: 1px solid #ccc;
-    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-}
-
-.tooltip-wrap:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
     </style>
 """, unsafe_allow_html=True)
 
@@ -399,30 +365,8 @@ with col_center[1]:
             }
             </style>
         """, unsafe_allow_html=True)
-       
-        col1, col2 = st.columns(2)
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            st.markdown("""
-                <div class="tooltip-wrap" style="margin-bottom: -6px;">
-                    <label style="font-weight: 500;">✨ Simplify the answer
-                        <span class="tooltip-text">Uses simpler language to explain the answer in a way that's easier to understand.</span>
-                    </label>
-                </div>
-            """, unsafe_allow_html=True)
-            explain_like_12 = st.toggle("", key="simplify_toggle")
-
-        with col2:
-            st.markdown("""
-                <div class="tooltip-wrap" style="margin-bottom: -6px;">
-                    <label style="font-weight: 500;">🧠 Enable memory for follow-up questions
-                        <span class="tooltip-text">Allows Pill-AI to remember your question context for follow-up questions.</span>
-                    </label>
-                </div>
-            """, unsafe_allow_html=True)
-            use_memory = st.toggle("", key="memory_toggle")
+        explain_like_12 = st.toggle("✨ Simplify the answer", value=False, key="simplify_toggle")
+        use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False, key="memory_toggle")
 
 if use_memory and "thread_id" not in st.session_state:
     st.session_state["thread_id"] = client.beta.threads.create().id
