@@ -102,6 +102,35 @@ st.markdown("""
         color: white;
         padding: 0.6em !important;
     }
+
+    .tooltip-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-wrap .tooltip-text {
+    visibility: hidden;
+    width: 220px;
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: left;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    top: -8px;
+    left: 105%;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.85em;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+}
+
+.tooltip-wrap:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
     </style>
 """, unsafe_allow_html=True)
 
@@ -365,8 +394,23 @@ with col_center[1]:
             }
             </style>
         """, unsafe_allow_html=True)
-        explain_like_12 = st.toggle("✨ Simplify the answer", value=False, key="simplify_toggle")
-        use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False, key="memory_toggle")
+       col1, col2 = st.columns(2)
+
+        with col1:
+            explain_like_12 = st.toggle("✨ Simplify the answer", value=False, key="simplify_toggle")
+            st.markdown("""
+            <div class="tooltip-wrap">ℹ️
+                <span class="tooltip-text">Uses simpler language</span>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with col2:
+            use_memory = st.toggle("🧠 Enable memory for follow-up questions", value=False, key="memory_toggle")
+            st.markdown("""
+            <div class="tooltip-wrap">ℹ️
+                <span class="tooltip-text">Allows Pill-AI to remember your question context for follow-up questions.</span>
+            </div>
+            """, unsafe_allow_html=True)
 
 if use_memory and "thread_id" not in st.session_state:
     st.session_state["thread_id"] = client.beta.threads.create().id
