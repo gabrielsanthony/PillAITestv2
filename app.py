@@ -342,6 +342,13 @@ send_button = st.button(L["send"], use_container_width=False)
 
 # Close the flexbox container
 st.markdown("</div>", unsafe_allow_html=True)
+# Add a short reminder below the input + send button
+st.markdown(
+    "<div style='text-align: center; color: grey; font-size: 0.85em; margin-top: 0.2rem;'>"
+    "⚠️ Pill-AI is not a substitute for professional advice from your pharmacist or doctor. Please contact them or Healthline (0800 611 116) if you have any questions or concerns"
+    "</div>",
+    unsafe_allow_html=True
+)
 
 # Add toggles BELOW the input box and send button
 col_center = st.columns([1, 2, 1])
