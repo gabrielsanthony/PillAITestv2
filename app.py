@@ -126,7 +126,7 @@ labels = {
        # "tagline": "Helping Kiwis understand medicines, safely.",
         "empty": "Please enter a question.",
         "error": "The assistant failed to complete the request.",
-        "disclaimer": "⚠️ Please contact your pharmacist or doctor, or Healthline (0800 611 116) if you have any concerns or questions about your medications.",
+        "disclaimer": "⚠️ Pill-AI is not a substitute for professional advice from your pharmacist or doctor. Please contact them or Healthline (0800 611 116) if you have any questions or concerns.",
         "privacy_title": "🔐 Privacy Policy – Click to expand",
         "privacy": """### 🛡️ Pill-AI Privacy Policy (Prototype Version)
 
@@ -342,10 +342,10 @@ send_button = st.button(L["send"], use_container_width=False)
 
 # Close the flexbox container
 st.markdown("</div>", unsafe_allow_html=True)
-# Add a short reminder below the input + send button
+# Add a short reminder below the input + send buttons
 st.markdown(
     "<div style='text-align: center; color: grey; font-size: 0.85em; margin-top: 0.2rem;'>"
-    "⚠️ Pill-AI is not a substitute for professional advice from your pharmacist or doctor. Please contact them or Healthline (0800 611 116) if you have any questions or concerns"
+    "⚠️ Pill-AI is a prototype for testing purposes only and MUST NOT be relied upon for health advice. Please contact your doctor or pharmacist if you have any questions about your health or medications."
     "</div>",
     unsafe_allow_html=True
 )
