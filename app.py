@@ -130,7 +130,7 @@ labels = {
         "privacy_title": "🔐 Privacy Policy – Click to expand",
         "privacy": """### 🛡️ Pill-AI Privacy Policy (Prototype Version)
 
-Welcome to Pill-AI — your trusted medicines advisor. This is a prototype tool designed to help people learn about their medicines using trusted Medsafe resources.
+Welcome to Pill-AI — your trusted medicines advisor. This is a prototype to test if a tool like this can help people learn about their medicines using trusted Medsafe resources.
 
 **📌 What we collect**  
 – The questions you type into the chat box  
@@ -344,7 +344,7 @@ send_button = st.button(L["send"], use_container_width=False)
 st.markdown("</div>", unsafe_allow_html=True)
 # Add a short reminder below the input + send buttons
 st.markdown(
-    "<div style='text-align: center; color: grey; font-size: 0.85em; margin-top: 0.2rem;'>"
+    "<div style='text-align: center; color: orange; font-size: 0.85em; font-weight: bold; margin-top: 0.2rem;'>"
     "⚠️ Pill-AI is a prototype for testing purposes only and MUST NOT be relied upon for health advice. Please contact your doctor or pharmacist if you have any questions about your health or medications."
     "</div>",
     unsafe_allow_html=True
